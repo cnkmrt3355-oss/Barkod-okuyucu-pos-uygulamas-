@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#10B981">
+<meta name="theme-color" content="#090D16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Barkodlu Satış Programı">
@@ -4048,8 +4048,28 @@
     } catch (_) {}
   }
 
+  function updateThemeColorMeta() {
+    // Aktif temanın --bg değişkenini okuyup meta[theme-color] ve manifest ile
+    // senkronladık: pencere/durum çubuğu artık sabit yeşil değil, seçili
+    // temanın gerçek arka plan rengini kullanıyor (açık/koyu fark etmeksizin).
+    const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    if (!bg) return;
+    let meta = document.querySelector('meta[name="theme-color"]');
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'theme-color');
+      document.head.appendChild(meta);
+    }
+    meta.setAttribute('content', bg);
+    const appleMeta = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleMeta) {
+      appleMeta.setAttribute('content', isLightBgTheme(settings.theme) ? 'default' : 'black-translucent');
+    }
+  }
+
   function applySettings() {
     document.documentElement.setAttribute('data-theme', settings.theme);
+    updateThemeColorMeta();
     const activePalettes = isLightBgTheme(settings.theme) ? palettesLight : palettesDark;
     const pal = activePalettes[settings.palette] || activePalettes.default;
     const root = document.documentElement.style;
