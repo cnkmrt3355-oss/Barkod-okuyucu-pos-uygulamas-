@@ -1,0 +1,20 @@
+{
+  "name": "Nur Market POS",
+  "short_name": "Nur Market",
+  "description": "Barkodlu Satış ve Stok Takip Programı",
+  "start_url": "./Nur_Market_POS_-_v23.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090D16",
+  "theme_color": "#10B981",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='32' fill='%23090D16'/%3E%3Ctext x='96' y='128' font-size='110' text-anchor='middle' fill='%2310B981' font-family='Arial'%3E%F0%9F%9B%92%3C/text%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
