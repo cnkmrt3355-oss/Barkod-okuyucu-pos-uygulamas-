@@ -2,7 +2,20 @@
 <html lang="tr" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1280">
+<!-- NOT: Program, ekran boyutuna göre yeniden düzenlenen (responsive) bir
+     mobil görünüm yerine, masaüstündeki görünümün BİREBİR AYNISINI küçük
+     ekranlara sığdıracak şekilde ayarlandı. "width=1280" değeri; tarayıcıya
+     sanki 1280px genişliğinde bir ekranmış gibi sayfayı çizmesini, ardından
+     bunu telefonun/ekranın gerçek genişliğine göre otomatik küçültmesini
+     söyler. Masaüstü tarayıcılarda bu satırın hiçbir etkisi yoktur (sadece
+     mobil tarayıcılar dikkate alır), o yüzden bilgisayardaki görünüm hiç
+     değişmez.
+     İSTEĞE BAĞLI AYAR: Telefonda yazılar/butonlar size çok küçük görünürse,
+     aşağıdaki "1280" sayısını biraz düşürün (ör. 1024) — bu, "yakınlaştırma"
+     seviyesini değiştirir ama düzeni bozmaz. Kullanıcılar yine de parmakla
+     yakınlaştırıp (pinch-zoom) okuyabilir/dokunabilir; bu kapatılmadı. -->
+<meta name="format-detection" content="telephone=no">
 <meta name="theme-color" content="#090D16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -558,7 +571,7 @@
     display: flex;
     gap: 12px;
   }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     .settings-modal { height: min(560px, 88vh); max-height: 88vh; }
   }
 
@@ -610,7 +623,7 @@
     margin: -10px 0 20px;
     line-height: 1.5;
   }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     .settings-layout { gap: 10px; }
     .settings-tabs { width: 56px; padding: 6px; gap: 6px; }
     .settings-tab { justify-content: center; padding: 12px 4px; }
@@ -1006,7 +1019,7 @@
     border: 1px solid var(--border-bright);
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   }
-  @media (min-width: 641px) and (max-width: 1024px) {
+  @media (min-width: 641px) and (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor */
     .layout-wrap { gap: 12px; }
     nav.tabs.sidebar {
       width: 168px;
@@ -1017,7 +1030,7 @@
       font-size: calc(13.5px * var(--font-scale, 1));
     }
   }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     .layout-wrap { gap: 10px; }
     nav.tabs.sidebar {
       width: 64px;
@@ -1055,7 +1068,7 @@
   }
   body.menu-top nav.tabs.sidebar button .tab-label { display: inline; }
   body.menu-top .main-content { width: 100%; }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     body.menu-top nav.tabs.sidebar { width: auto; padding: 6px; }
     body.menu-top nav.tabs.sidebar button { padding: 12px 8px; }
     body.menu-top nav.tabs.sidebar button .tab-label { display: inline; }
@@ -1244,7 +1257,7 @@
     font-size: calc(12.5px * var(--font-scale, 1));
     white-space: nowrap;
   }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     #orderSuccess { flex-wrap: wrap; }
     #orderSuccess .os-text { width: 100%; order: 1; }
     #orderSuccess button { order: 2; flex: 1; }
@@ -1472,7 +1485,7 @@
     align-items: end;
   }
   .product-image-field { grid-column: span 2; }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     .form-grid { grid-template-columns: 1fr; }
     .product-image-field { grid-column: auto; }
   }
@@ -1936,7 +1949,7 @@
     border: 1px solid var(--border);
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     thead th:nth-child(2), tbody td.barcode-cell { display: none; }
     .scan-row { flex-direction: column; }
     .scan-row button { padding: 14px; }
@@ -1998,7 +2011,7 @@
     min-height: 0;
     overflow-y: auto;
   }
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     nav.tabs.sidebar { max-height: calc(100vh - 80px); }
   }
 
@@ -2047,6 +2060,30 @@
   #panel-satis #fastButtonsContainer { max-height: 100px; overflow-y: auto; }
   #panel-satis .fast-buttons { margin: 0; }
   #panel-satis .scan-msg { margin-top: 8px; padding: 8px 12px; }
+  .kasa-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kasa-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: calc(12.5px * var(--font-scale, 1));
+    font-weight: 700;
+    color: var(--warning);
+    background: var(--warning-light);
+    border: 1px solid rgba(245,158,11,0.35);
+    padding: 4px 6px 4px 10px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .kasa-badge:hover { background: rgba(245,158,11,0.28); }
+  .kasa-badge .kasa-badge-x {
+    color: var(--warning);
+    opacity: 0.75;
+    font-weight: 800;
+    padding: 0 3px;
+    border-radius: 4px;
+  }
+  .kasa-badge .kasa-badge-x:hover { opacity: 1; background: rgba(0,0,0,0.15); }
 
   #panel-satis .sales-cart-table {
     flex: 1 1 auto;
@@ -2108,12 +2145,12 @@
   #panel-satis .totals-bar .amount { font-size: calc(var(--font-scale, 1) * clamp(24px, 2.4vw, 32px)); }
   #panel-satis .totals-actions-buttons .btn { padding: 12px 20px; }
 
-  @media (min-width: 641px) and (max-width: 1024px) {
+  @media (min-width: 641px) and (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor */
     #panel-satis .pay-method-btn { padding: 12px 8px; font-size: calc(13px * var(--font-scale, 1)); }
     #panel-satis .pay-method-btn .pmi { font-size: calc(20px * var(--font-scale, 1)); }
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 0px) { /* devre dışı: masaüstü görünümü korunuyor, JS+viewport ile küçük ekrana sığdırılıyor */
     #panel-satis .checkout-discount { flex: 1 1 100%; }
     #panel-satis .pay-method-grid { grid-template-columns: repeat(2, 1fr); }
     #panel-satis #fastButtonsContainer { max-height: 60px; }
@@ -2193,6 +2230,7 @@
         <span class="scan-hint">Herhangi bir tuşa basıldığında barkod alanı otomatik odaklanır.</span>
         <span class="cart-count-badge">🛒 <span id="statCartCount">0 Adet</span></span>
       </div>
+      <div class="kasa-badges" id="heldSalesBar" style="margin-top:8px; display:none;"></div>
 
       <div id="fastButtonsContainer">
         <div class="fast-section-title">⭐ Hızlı Satış</div>
@@ -2269,6 +2307,7 @@
       </div>
       <div class="totals-actions">
         <div class="totals-actions-buttons" id="totalsActionsButtons">
+          <button class="btn btn-ghost" id="btnBeklet" title="Bu sepeti beklemeye al, başka müşteriye geç">⏸️ Beklet</button>
           <button class="btn btn-ghost" id="btnIptal" style="color:var(--danger); border-color: rgba(239,68,68,0.4);">Sepeti Boşalt</button>
           <button class="btn btn-primary" id="btnTamamla" disabled>Satışı Tamamla</button>
         </div>
@@ -3497,6 +3536,7 @@
   let products = [];
   let cart = [];
   let sales = [];
+  let heldSales = [];
   let editingId = null;
   let dirHandle = null;
   let dirUrunler = null;
@@ -3518,6 +3558,15 @@
       const raw = localStorage.getItem('nur_market_stock_log');
       if(raw) stockLog = JSON.parse(raw) || [];
     }catch(_){ stockLog = []; }
+  }
+  function loadHeldSales(){
+    try{
+      const raw = localStorage.getItem('nur_market_held_sales');
+      if(raw) heldSales = JSON.parse(raw) || [];
+    }catch(_){ heldSales = []; }
+  }
+  function saveHeldSales(){
+    try{ localStorage.setItem('nur_market_held_sales', JSON.stringify(heldSales)); }catch(_){}
   }
   function saveStockLog(){
     try{ localStorage.setItem('nur_market_stock_log', JSON.stringify(stockLog)); }catch(_){}
@@ -5925,6 +5974,7 @@
   document.getElementById('btnIptal').addEventListener('click', ()=>{
     if(cart.length===0) return;
     cart = [];
+    activeKasaLabel = null;
     renderCart();
   });
 
@@ -5946,6 +5996,139 @@
       if(currentPayMethod==='credit') refreshPayCreditCustomers();
     });
   });
+
+  // ================= BEKLEYEN SATIŞLAR (MÜŞTERİ BEKLETME) =================
+  function captureCheckoutState(){
+    return {
+      discountValue: document.getElementById('discountValue').value || '',
+      discountType: document.getElementById('discountType').value,
+      payMethod: currentPayMethod,
+      installmentCount: document.getElementById('payInstallmentCount').value,
+      creditCustomerId: document.getElementById('payCreditCustomer').value
+    };
+  }
+
+  function applyCheckoutState(state){
+    document.getElementById('discountValue').value = state.discountValue || '';
+    document.getElementById('discountType').value = state.discountType || 'amount';
+    currentPayMethod = state.payMethod || 'cash';
+    document.querySelectorAll('.pay-method-btn').forEach(b=>b.classList.toggle('active', b.dataset.method===currentPayMethod));
+    document.getElementById('installmentFields').style.display = currentPayMethod==='installment' ? 'flex' : 'none';
+    document.getElementById('payCreditFields').style.display = currentPayMethod==='credit' ? 'block' : 'none';
+    if(state.installmentCount) document.getElementById('payInstallmentCount').value = state.installmentCount;
+    if(currentPayMethod==='credit'){
+      refreshPayCreditCustomers();
+      if(state.creditCustomerId) document.getElementById('payCreditCustomer').value = state.creditCustomerId;
+    }
+  }
+
+  let activeKasaLabel = null;
+
+  function kasaNum(label){
+    const m = /Kasa (\d+)/.exec(label || '');
+    return m ? parseInt(m[1], 10) : 999999;
+  }
+
+  function renderHeldSalesBadge(){
+    const bar = document.getElementById('heldSalesBar');
+    if(heldSales.length === 0){
+      bar.style.display = 'none';
+      bar.innerHTML = '';
+      return;
+    }
+    bar.style.display = 'flex';
+    const sorted = [...heldSales].sort((a,b) => kasaNum(a.label) - kasaNum(b.label));
+    bar.innerHTML = sorted.map(hs => `
+      <span class="kasa-badge" data-action="resume" data-id="${hs.id}">
+        ⏸️ ${escapeHtml(hs.label)}
+        <span class="kasa-badge-x" data-action="delete" data-id="${hs.id}" title="Sil">✕</span>
+      </span>
+    `).join('');
+  }
+
+  document.getElementById('heldSalesBar').addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-action="delete"]');
+    if(delBtn){
+      deleteHeldSale(delBtn.dataset.id);
+      return;
+    }
+    const badge = e.target.closest('[data-action="resume"]');
+    if(badge) resumeHeldSale(badge.dataset.id);
+  });
+
+  function getNextKasaLabel(){
+    const used = new Set(heldSales.map(h => h.label));
+    let n = 1;
+    while(used.has('Kasa ' + n)) n++;
+    return 'Kasa ' + n;
+  }
+
+  function holdCurrentCart(){
+    if(cart.length === 0) return null;
+    const held = {
+      id: genId(),
+      date: new Date().toISOString(),
+      label: activeKasaLabel || getNextKasaLabel(),
+      cart: cart.map(i=>({...i})),
+      checkoutState: captureCheckoutState()
+    };
+    heldSales.push(held);
+    saveHeldSales();
+    cart = [];
+    activeKasaLabel = null;
+    document.getElementById('discountValue').value = '';
+    currentPayMethod = 'cash';
+    document.querySelectorAll('.pay-method-btn').forEach(b=>b.classList.toggle('active', b.dataset.method==='cash'));
+    document.getElementById('installmentFields').style.display = 'none';
+    document.getElementById('payCreditFields').style.display = 'none';
+    renderCart();
+    renderHeldSalesBadge();
+    return held;
+  }
+
+  document.getElementById('btnBeklet').addEventListener('click', () => {
+    if(cart.length === 0){
+      showScanMsg('Beklemeye almak için sepette ürün olmalı.', false);
+      return;
+    }
+    const held = holdCurrentCart();
+    if(held){
+      showScanMsg(held.label + ' olarak beklemeye alındı. Yeni müşteriye devam edebilirsiniz.', true);
+      barcodeInput.focus();
+    }
+  });
+
+  function resumeHeldSale(id){
+    const hs = heldSales.find(h => h.id === id);
+    if(!hs) return;
+    // Ekrandaki mevcut sepet varsa, kendi kasa numarasına otomatik olarak
+    // (sormadan) beklemeye alınır, ardından seçilen kasaya geçilir.
+    const previousLabel = activeKasaLabel;
+    const hadCart = cart.length > 0;
+    if(hadCart) holdCurrentCart();
+    heldSales = heldSales.filter(h => h.id !== id);
+    saveHeldSales();
+    cart = hs.cart.map(i=>({...i}));
+    activeKasaLabel = hs.label;
+    applyCheckoutState(hs.checkoutState || {});
+    renderCart();
+    renderHeldSalesBadge();
+    barcodeInput.focus();
+    if(hadCart){
+      showScanMsg((previousLabel || 'Mevcut sepet') + ' beklemeye alındı, ' + hs.label + ' yüklendi.', true);
+    } else {
+      showScanMsg(hs.label + ' yüklendi.', true);
+    }
+  }
+
+  function deleteHeldSale(id){
+    const ok = confirm('Bu bekleyen satış silinsin mi? Bu işlem geri alınamaz.');
+    if(!ok) return;
+    heldSales = heldSales.filter(h => h.id !== id);
+    saveHeldSales();
+    renderHeldSalesBadge();
+  }
+
 
   document.getElementById('btnTamamla').addEventListener('click', async ()=>{
     if(cart.length===0) return;
@@ -5989,6 +6172,7 @@
     };
     sales.unshift(sale);
     cart = [];
+    activeKasaLabel = null;
     document.getElementById('discountValue').value = '';
     // Nakit girişini otomatik kasa defterine işle
     let cashIn = 0;
@@ -7931,6 +8115,8 @@
   loadCreditCustomers();
   loadCashLedger();
   loadStockLog();
+  loadHeldSales();
+  renderHeldSalesBadge();
   loadAuditLog();
   loadContactItems();
   loadFastList();
