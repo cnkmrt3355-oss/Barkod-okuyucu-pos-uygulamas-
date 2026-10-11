@@ -2446,6 +2446,23 @@
         <label style="font-size:12px; color:var(--ink-muted);">Veresiye Müşterisi</label>
         <select id="payCreditCustomer" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);"></select>
       </div>
+      <div id="cashChangeBox" style="display:none; margin-top:10px;">
+        <label style="font-size:12px; color:var(--ink-muted);">💵 Para Üstü (müşterinin verdiği parayı toplamak için banknotlara dokunun)</label>
+        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:6px 0;">
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="5" style="padding:10px 0; font-weight:700;">5 ₺</button>
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="10" style="padding:10px 0; font-weight:700;">10 ₺</button>
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="20" style="padding:10px 0; font-weight:700;">20 ₺</button>
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="50" style="padding:10px 0; font-weight:700;">50 ₺</button>
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="100" style="padding:10px 0; font-weight:700;">100 ₺</button>
+          <button type="button" class="btn btn-ghost cash-quick-btn" data-amt="200" style="padding:10px 0; font-weight:700;">200 ₺</button>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <input type="number" id="cashReceivedInput" placeholder="Alınan tutar" step="0.01" min="0" inputmode="decimal" style="flex:1; min-width:0; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
+          <button type="button" class="btn btn-ghost" id="btnCashExact">Tam</button>
+          <button type="button" class="btn btn-ghost" id="btnCashClear">Sıfırla</button>
+        </div>
+        <div id="cashChangeResult" style="margin-top:8px; font-size:18px; font-weight:700;"></div>
+      </div>
     </div>
     </div>
     <div class="totals-bar">
@@ -3064,7 +3081,7 @@
       <div class="setting-group" id="productSyncGroup">
         <label>🔄 Ürün Listesi Senkronu (Firebase)</label>
         <div style="font-size:12px; color:var(--ink-muted); margin-bottom:10px; line-height:1.6;">
-          Yeni ürün eklediğinizde veya fiyat/ad/KDV/kategori değiştirdiğinizde, giriş yapmış tüm cihazlara birkaç saniye içinde otomatik yansır. Stok, maliyet, tedarikçi ve resim cihazlara ayrı kalır; yeni ürünler diğer cihazlarda stok 0 ile gelir.
+          Yeni ürün eklediğinizde veya fiyat/ad/KDV/kategori değiştirdiğinizde, giriş yapmış tüm cihazlara birkaç saniye içinde otomatik yansır. Stok, maliyet, tedarikçi ve resim cihazlara ayrı kalır; yeni ürünler diğer cihazlarda stok 0 ile gelir. İnternet yokken yaptığınız değişiklikler, internet gelince otomatik eşitlenir.
         </div>
         <input type="email" id="fbEmailInput" placeholder="E-posta" style="width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink); margin-bottom:8px;" autocomplete="username">
         <input type="password" id="fbPassInput" placeholder="Şifre" style="width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink); margin-bottom:10px;" autocomplete="current-password">
@@ -6156,6 +6173,7 @@
       discountLine.style.display = 'none';
       finalLine.style.display = 'none';
     }
+    try{ updateChangeCalc(); }catch(_){}
   }
 
   // İndirim alanına yetki kontrolü
@@ -6204,6 +6222,47 @@
 
   let currentPayMethod = 'cash';
 
+  // ================= PARA ÜSTÜ HESAPLAMA =================
+  let cashReceived = 0;
+  function updateChangeCalc(){
+    const box = document.getElementById('cashChangeBox');
+    if(!box) return;
+    if(cart.length === 0) cashReceived = 0;
+    const show = currentPayMethod === 'cash' && cart.length > 0;
+    box.style.display = show ? 'block' : 'none';
+    const inp = document.getElementById('cashReceivedInput');
+    if(document.activeElement !== inp) inp.value = cashReceived > 0 ? String(Math.round(cashReceived * 100) / 100) : '';
+    const res = document.getElementById('cashChangeResult');
+    if(!show){ res.textContent = ''; return; }
+    const due = getFinalTotal();
+    if(cashReceived <= 0){
+      res.style.color = 'var(--ink-muted)';
+      res.textContent = 'Ödenecek: ' + fmt(due) + ' ₺';
+      return;
+    }
+    const diff = Math.round((cashReceived - due) * 100) / 100;
+    if(diff >= 0){
+      res.style.color = '#16a34a';
+      res.textContent = 'Para üstü: ' + fmt(diff) + ' ₺';
+    } else {
+      res.style.color = 'var(--danger)';
+      res.textContent = 'Eksik: ' + fmt(-diff) + ' ₺';
+    }
+  }
+  document.querySelectorAll('.cash-quick-btn').forEach(b => b.addEventListener('click', () => {
+    cashReceived = Math.round((cashReceived + Number(b.dataset.amt)) * 100) / 100;
+    updateChangeCalc();
+  }));
+  document.getElementById('btnCashExact').addEventListener('click', () => {
+    cashReceived = Math.round(getFinalTotal() * 100) / 100;
+    updateChangeCalc();
+  });
+  document.getElementById('btnCashClear').addEventListener('click', () => { cashReceived = 0; updateChangeCalc(); });
+  document.getElementById('cashReceivedInput').addEventListener('input', function(){
+    cashReceived = parseFloat(String(this.value).replace(',', '.')) || 0;
+    updateChangeCalc();
+  });
+
   function refreshPayCreditCustomers(){
     const custSel = document.getElementById('payCreditCustomer');
     custSel.innerHTML = creditCustomers.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('') || '<option value="">Kayıtlı müşteri yok</option>';
@@ -6218,6 +6277,7 @@
       document.getElementById('installmentFields').style.display = currentPayMethod==='installment' ? 'flex' : 'none';
       document.getElementById('payCreditFields').style.display = currentPayMethod==='credit' ? 'block' : 'none';
       if(currentPayMethod==='credit') refreshPayCreditCustomers();
+      updateChangeCalc();
     });
   });
 
@@ -8871,7 +8931,7 @@
   }
 
   // ================= ÜRÜN LİSTESİ SENKRONU (FIREBASE) =================
-  // Firebase konsolundan aldığınız ayarları aşağıdaki "BURAYA" yerlerine yapıştırın.
+  // Çevrimdışı çalışma: değişiklikler cihazda izlenir, internet gelince otomatik eşitlenir.
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyBoqW4Lk0UcEf7sna3pJ_1B3Qq5dMP99tc",
     authDomain: "barkod-satis-c384f.firebaseapp.com",
@@ -8881,8 +8941,15 @@
     appId: "1:967605909189:web:858b8acddd38e5123062ac"
   };
   const FB_VER = '10.12.2';
-  let fbDb = null, fbAuth = null, fbUnsub = null, fbReady = false;
-  const fbSigs = new Map(); // barkod -> en son bulutla eşleşen imza
+  const FB_STATE_KEY = 'nur_market_psync_state';
+  let fbDb = null, fbAuth = null, fbUnsub = null;
+  let fbReady = false;      // giriş yapıldı, dinleyici açık
+  let fbMerged = false;     // sunucudan güncel liste alındı, birleştirme yapıldı
+  let fbInitDone = false, fbInitBusy = false;
+  const fbBase = new Map();        // barkod -> bulutla en son eşleşen imza ('deleted' = silinmiş)
+  const fbInflight = new Map();    // barkod -> gönderilmekte olan imza
+  const fbPendingDel = new Set();  // kullanıcının sildiği, henüz buluta işlenmemiş barkodlar
+
   function fbConfigured(){
     return FIREBASE_CONFIG.apiKey !== 'BURAYA' && FIREBASE_CONFIG.projectId !== 'BURAYA';
   }
@@ -8895,112 +8962,185 @@
   function fbSig(o){
     return JSON.stringify([String(o.name || ''), Number(o.price) || 0, Number(o.kdv) || 0, String(o.category || '')]);
   }
+  function fbSave(){
+    try{
+      localStorage.setItem(FB_STATE_KEY, JSON.stringify({ base: Array.from(fbBase.entries()), del: Array.from(fbPendingDel) }));
+    }catch(_){}
+  }
+  function fbLoad(){
+    try{
+      const o = JSON.parse(localStorage.getItem(FB_STATE_KEY) || 'null');
+      if(o){
+        (o.base || []).forEach(kv => fbBase.set(kv[0], kv[1]));
+        (o.del || []).forEach(k => fbPendingDel.add(k));
+      }
+    }catch(_){}
+  }
   function fbLoadScript(src){
     return new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = src; s.onload = resolve;
-      s.onerror = () => reject(new Error('Firebase dosyası yüklenemedi'));
-      document.head.appendChild(s);
+      const sc = document.createElement('script');
+      sc.src = src; sc.onload = resolve;
+      sc.onerror = () => reject(new Error('Firebase dosyası yüklenemedi'));
+      document.head.appendChild(sc);
     });
   }
-  function fbApplyRemote(r){
-    const barcode = String(r.barcode == null ? '' : r.barcode).trim();
-    if(!barcode) return null;
-    const price = Number(r.price) || 0, kdv = Number(r.kdv) || 0;
-    const name = String(r.name || barcode), category = String(r.category || '');
-    let result = null;
-    const ex = products.find(p => p.barcode === barcode);
+  function fbFindProduct(bc){
+    return products.find(p => String(p.barcode == null ? '' : p.barcode).trim() === bc);
+  }
+  function fbApplyData(bc, d){
+    const price = Number(d.price) || 0, kdv = Number(d.kdv) || 0;
+    const name = String(d.name || bc), category = String(d.category || '');
+    const ex = fbFindProduct(bc);
     if(!ex){
-      products.push({id: genId(), name, barcode, price, kdv, stock: 0, category, critStock: 5, cost: 0, supplier: '', expiry: '', image: null});
-      result = 'added';
-    } else if(fbSig(ex) !== fbSig({name, price, kdv, category})){
-      ex.name = name; ex.price = price; ex.kdv = kdv; ex.category = category;
-      result = 'updated';
+      products.push({id: genId(), name, barcode: bc, price, kdv, stock: 0, category, critStock: 5, cost: 0, supplier: '', expiry: '', image: null});
+      return 'added';
     }
-    fbSigs.set(barcode, fbSig({name, price, kdv, category}));
-    return result;
+    ex.name = name; ex.price = price; ex.kdv = kdv; ex.category = category;
+    return 'updated';
+  }
+  function fbRemoveLocal(bc){
+    const ex = fbFindProduct(bc);
+    if(!ex) return false;
+    products = products.filter(p => p.id !== ex.id);
+    fastProductIds = fastProductIds.filter(x => x !== ex.id);
+    saveFastList();
+    cart = cart.filter(item => item.barcode !== bc);
+    return true;
+  }
+  // Üç yönlü birleştirme: bulutta olan (R), cihazda olan (L) ve en son eşleşen (B) durum karşılaştırılır.
+  // Yalnızca cihazda değişen kayıt cihazdan buluta gider; yalnızca bulutta değişen buluttan cihaza gelir.
+  function fbReconcile(bc, R, d){
+    const B = fbBase.get(bc);
+    const p = fbFindProduct(bc);
+    let pendDel = fbPendingDel.has(bc);
+    if(pendDel && p){ fbPendingDel.delete(bc); pendDel = false; } // silindikten sonra yeniden eklenmiş
+    let L, localChanged;
+    if(pendDel){ L = 'deleted'; localChanged = true; }
+    else if(p){ L = fbSig(p); localChanged = (B !== undefined && L !== B); }
+    else { L = undefined; localChanged = false; }
+    const remoteChanged = (B === undefined) || (R !== B);
+    if(localChanged && (!remoteChanged || L !== R)) return null; // cihazdaki değişiklik kazanır, gönderilecek
+    let res = null;
+    if(R === 'deleted'){ if(fbRemoveLocal(bc)) res = 'removed'; }
+    else if(!p || fbSig(p) !== R){ res = fbApplyData(bc, d); }
+    fbBase.set(bc, R);
+    if(pendDel && R === 'deleted') fbPendingDel.delete(bc);
+    return res;
   }
   function fbPushChanges(){
-    if(!fbReady || !fbDb || !fbAuth || !fbAuth.currentUser) return;
-    const pending = products.filter(p => {
-      const bc = String(p.barcode || '').trim();
-      return bc && fbSigs.get(bc) !== fbSig(p);
+    if(!fbReady || !fbMerged || !fbDb || !fbAuth || !fbAuth.currentUser) return;
+    const pm = new Map();
+    products.forEach(p => {
+      const bc = String(p.barcode == null ? '' : p.barcode).trim();
+      if(bc) pm.set(bc, p);
     });
-    for(let i = 0; i < pending.length; i += 400){
-      const chunk = pending.slice(i, i + 400);
-      const batch = fbDb.batch();
-      chunk.forEach(p => {
-        const bc = String(p.barcode).trim();
-        batch.set(fbDb.collection('products').doc(encodeURIComponent(bc)), {
+    const ops = [];
+    pm.forEach((p, bc) => {
+      fbPendingDel.delete(bc);
+      const sig = fbSig(p);
+      if(fbBase.get(bc) !== sig && fbInflight.get(bc) !== sig){
+        ops.push({bc, sig, doc: {
           name: String(p.name || ''), barcode: bc, price: Number(p.price) || 0,
           kdv: Number(p.kdv) || 0, category: String(p.category || ''), deleted: false,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        fbSigs.set(bc, fbSig(p));
+        }});
+      }
+    });
+    fbPendingDel.forEach(bc => {
+      if(fbBase.get(bc) === 'deleted'){ fbPendingDel.delete(bc); return; }
+      if(fbInflight.get(bc) !== 'deleted'){
+        ops.push({bc, sig: 'deleted', doc: {
+          barcode: bc, deleted: true,
+          deletedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }});
+      }
+    });
+    for(let i = 0; i < ops.length; i += 400){
+      const chunk = ops.slice(i, i + 400);
+      const batch = fbDb.batch();
+      chunk.forEach(o => {
+        batch.set(fbDb.collection('products').doc(encodeURIComponent(o.bc)), o.doc);
+        fbInflight.set(o.bc, o.sig);
       });
-      batch.commit().catch(e => {
-        chunk.forEach(p => fbSigs.delete(String(p.barcode).trim()));
+      batch.commit().then(() => {
+        chunk.forEach(o => {
+          if(fbInflight.get(o.bc) === o.sig) fbInflight.delete(o.bc);
+          fbBase.set(o.bc, o.sig);
+          if(o.sig === 'deleted') fbPendingDel.delete(o.bc);
+        });
+        fbSave();
+      }).catch(e => {
+        chunk.forEach(o => fbInflight.delete(o.bc));
         fbStatus("Buluta yazılamadı: " + ((e && e.message) ? e.message : "hata"), true);
       });
     }
+    if(ops.length) fbSave();
   }
   function fbDeleteBarcodes(barcodes){
     barcodes.forEach(b => {
       const bc = String(b == null ? '' : b).trim();
-      if(!bc) return;
-      fbSigs.set(bc, 'deleted');
-      if(fbReady && fbDb && fbAuth && fbAuth.currentUser){
-        fbDb.collection('products').doc(encodeURIComponent(bc)).set({
-          barcode: bc, deleted: true,
-          deletedAt: firebase.firestore.FieldValue.serverTimestamp()
-        }).catch(e => {
-          fbSigs.delete(bc);
-          fbStatus("Buluttan silinemedi: " + ((e && e.message) ? e.message : "hata"), true);
-        });
-      }
+      if(bc) fbPendingDel.add(bc);
     });
+    fbSave();
   }
   function fbStart(user){
     if(fbUnsub){ fbUnsub(); fbUnsub = null; }
-    fbReady = true;
+    fbReady = true; fbMerged = false;
     fbStatus("Bağlı: " + user.email + " · eşitleniyor...", false);
-    let first = true;
-    fbUnsub = fbDb.collection('products').onSnapshot(async snap => {
+    fbUnsub = fbDb.collection('products').onSnapshot({includeMetadataChanges: true}, async snap => {
       let added = 0, updated = 0, removed = 0;
       snap.docChanges().forEach(ch => {
         if(ch.doc.metadata.hasPendingWrites) return;
         const d = ch.doc.data() || {};
-        if(ch.type === 'removed' || d.deleted){
-          let bc = String(d.barcode == null ? '' : d.barcode).trim();
-          if(!bc){ try{ bc = decodeURIComponent(ch.doc.id); }catch(_){ bc = ch.doc.id; } }
-          if(ch.type === 'removed') fbSigs.delete(bc); else fbSigs.set(bc, 'deleted');
-          const ex = products.find(p => p.barcode === bc);
-          if(ex){
-            products = products.filter(p => p.id !== ex.id);
-            fastProductIds = fastProductIds.filter(x => x !== ex.id);
-            saveFastList();
-            cart = cart.filter(item => item.barcode !== bc);
-            removed++;
-          }
-          return;
-        }
-        const res = fbApplyRemote(d);
-        if(res === 'added') added++; else if(res === 'updated') updated++;
+        let bc = String(d.barcode == null ? '' : d.barcode).trim();
+        if(!bc){ try{ bc = decodeURIComponent(ch.doc.id); }catch(_){ bc = ch.doc.id; } }
+        if(!bc) return;
+        const R = (ch.type === 'removed' || d.deleted) ? 'deleted' : fbSig(d);
+        const res = fbReconcile(bc, R, d);
+        if(res === 'added') added++; else if(res === 'updated') updated++; else if(res === 'removed') removed++;
       });
+      if(!snap.metadata.fromCache) fbMerged = true;
+      fbSave();
       if(added || updated || removed){
         await persist();
         renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderFastButtons(); renderCart();
       }
-      if(first){ first = false; fbPushChanges(); }
-      const t = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-      fbStatus("Bağlı: " + user.email + " · son eşitleme " + t + (added || updated || removed ? " (" + added + " yeni, " + updated + " güncellenen, " + removed + " silinen)" : ""), false);
+      fbPushChanges();
+      if(snap.metadata.fromCache){
+        fbStatus("Bağlı: " + user.email + " · internet bekleniyor. Değişiklikleriniz saklanıyor, bağlanınca otomatik eşitlenecek.", false);
+      } else {
+        const t = new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+        fbStatus("Bağlı: " + user.email + " · son eşitleme " + t + (added || updated || removed ? " (" + added + " yeni, " + updated + " güncellenen, " + removed + " silinen)" : ""), false);
+      }
     }, err => fbStatus("Eşitleme hatası: " + err.message, true));
   }
   function fbStop(){
     if(fbUnsub){ fbUnsub(); fbUnsub = null; }
-    fbReady = false;
-    fbSigs.clear();
+    fbReady = false; fbMerged = false;
     fbStatus("Giriş yapılmadı. Eşitleme için e-posta ve şifre ile giriş yapın.", false);
+  }
+  async function fbTryInit(){
+    if(fbInitDone || fbInitBusy || !fbConfigured()) return;
+    if(navigator.onLine === false){
+      fbStatus("İnternet yok. Program çalışmaya devam eder, internet gelince otomatik eşitlenecek.", false);
+      return;
+    }
+    fbInitBusy = true;
+    try{
+      const base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
+      if(typeof firebase === 'undefined') await fbLoadScript(base + 'firebase-app-compat.js');
+      if(!firebase.auth) await fbLoadScript(base + 'firebase-auth-compat.js');
+      if(!firebase.firestore) await fbLoadScript(base + 'firebase-firestore-compat.js');
+      if(!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+      fbAuth = firebase.auth();
+      fbDb = firebase.firestore();
+      try{ fbDb.enablePersistence({synchronizeTabs: true}).catch(() => {}); }catch(_){}
+      fbInitDone = true;
+      fbAuth.onAuthStateChanged(user => { if(user) fbStart(user); else fbStop(); });
+    }catch(e){
+      fbStatus("Eşitleme için bağlantı kurulamadı. Program çalışmaya devam eder, internet gelince otomatik denenecek.", true);
+    }
+    fbInitBusy = false;
   }
   async function initProductSync(){
     const loginBtn = document.getElementById('btnFbLogin');
@@ -9018,20 +9158,12 @@
       fbStatus("Firebase ayarı henüz yapılmadı (index.html içindeki FIREBASE_CONFIG).", true);
       return;
     }
-    try{
-      const base = 'https://www.gstatic.com/firebasejs/' + FB_VER + '/';
-      await fbLoadScript(base + 'firebase-app-compat.js');
-      await fbLoadScript(base + 'firebase-auth-compat.js');
-      await fbLoadScript(base + 'firebase-firestore-compat.js');
-      firebase.initializeApp(FIREBASE_CONFIG);
-      fbAuth = firebase.auth();
-      fbDb = firebase.firestore();
-      try{ fbDb.enablePersistence({synchronizeTabs: true}).catch(() => {}); }catch(_){}
-      fbAuth.onAuthStateChanged(user => { if(user) fbStart(user); else fbStop(); });
-    }catch(e){
-      fbStatus("Bağlanılamadı (internet yok olabilir). Program çevrimdışı çalışmaya devam eder.", true);
-    }
+    fbLoad();
+    fbTryInit();
+    window.addEventListener('online', fbTryInit);
+    setInterval(fbTryInit, 30000);
   }
+  fbLoad();
 
   // ================= BAŞLAT =================
   loadUsers();
