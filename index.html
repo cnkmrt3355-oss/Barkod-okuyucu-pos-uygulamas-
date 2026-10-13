@@ -28,6 +28,33 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+
+  /* ===== TARTILI SATIŞ ===== */
+  .weigh-open-btn { margin-top:8px; width:100%; padding:12px 14px; border-radius:var(--radius-md); border:1px dashed var(--border-bright); background:var(--surface-card); color:var(--ink); font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; }
+  .weigh-open-btn:hover { background:var(--surface-hover); }
+  .weigh-tabs { display:flex; gap:6px; margin-bottom:14px; }
+  .weigh-tabs button { flex:1; padding:10px; border-radius:var(--radius-md); border:1px solid var(--border); background:var(--bg); color:var(--ink); font-weight:700; cursor:pointer; font-family:inherit; }
+  .weigh-tabs button.active { background:var(--primary); color:#fff; border-color:var(--primary); }
+  .weigh-chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .weigh-chip { display:flex; align-items:stretch; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); overflow:hidden; }
+  .weigh-chip.sel { border-color:var(--primary); box-shadow:0 0 0 2px var(--glow, rgba(99,102,241,0.25)); }
+  .weigh-chip .wc-main { padding:8px 12px; background:none; border:none; color:var(--ink); cursor:pointer; text-align:left; font-family:inherit; }
+  .weigh-chip .wc-main b { display:block; font-size:14px; }
+  .weigh-chip .wc-main small { color:var(--ink-muted, #8EA9D7); font-family:'JetBrains Mono', monospace; font-size:12px; }
+  .weigh-chip .wc-act { padding:0 9px; background:none; border:none; border-left:1px solid var(--border); color:var(--ink-muted, #8EA9D7); cursor:pointer; font-size:14px; }
+  .weigh-chip .wc-act:hover { background:var(--surface-hover); color:var(--ink); }
+  .weigh-result { margin:12px 0; padding:14px; border-radius:var(--radius-md); background:var(--bg); border:1px solid var(--border); text-align:center; }
+  .weigh-result .wr-label { font-size:12px; color:var(--ink-muted, #8EA9D7); }
+  .weigh-result .wr-amount { font-size:32px; font-weight:800; font-family:'JetBrains Mono', monospace; color:var(--primary); }
+  .weigh-inline { display:flex; gap:8px; }
+  .weigh-inline > * { flex:1; min-width:0; }
+  .weigh-field label { display:block; font-size:12px; font-weight:600; margin:0 0 4px; }
+  .weigh-field input { width:100%; padding:12px; font-size:18px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink); font-family:'JetBrains Mono', monospace; box-sizing:border-box; }
+  .weigh-quick { display:flex; gap:6px; margin:8px 0; flex-wrap:wrap; }
+  .weigh-quick button { padding:6px 12px; border-radius:99px; border:1px solid var(--border); background:var(--surface-card); color:var(--ink); cursor:pointer; font-family:inherit; font-size:13px; }
+  .weigh-quick button:hover { background:var(--surface-hover); }
+  .weigh-empty { font-size:13px; color:var(--ink-muted, #8EA9D7); padding:6px 0 10px; }
+
   /* ===== TEMA DEĞİŞKENLERİ ===== (aynı, değişiklik yok) */
   :root[data-theme="dark"] {
     --bg: #090D16; --surface: #111827; --surface-card: #1F2937; --surface-hover: #374151;
@@ -2515,6 +2542,8 @@
       </div>
       <div class="kasa-badges" id="heldSalesBar" style="margin-top:8px; display:none;"></div>
 
+      <button type="button" class="weigh-open-btn" id="weighOpenBtn">⚖️ Tartılı Satış (gram / tutar)</button>
+
       <div id="fastButtonsContainer">
         <div class="fast-section-title">⭐ Hızlı Satış</div>
         <div class="fast-buttons" id="fastButtons"></div>
@@ -3369,6 +3398,67 @@
       <div style="display:flex; gap:10px;">
         <button class="btn btn-ghost" id="cashEditDeleteBtn" style="flex:1; color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Sil</button>
         <button class="contact-save-btn" id="cashEditSaveBtn" style="flex:2; margin-top:0;">💾 Kaydet</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- TARTILI SATIŞ MODALI -->
+<div class="contact-overlay" id="weighOverlay">
+  <div class="contact-modal">
+    <div class="contact-header">
+      <h2>⚖️ Tartılı Satış</h2>
+      <button class="contact-close" id="weighClose" aria-label="Kapat">✕</button>
+    </div>
+    <div class="contact-body">
+      <div class="weigh-tabs">
+        <button type="button" class="active" data-wmode="gram">Gram ile hesapla</button>
+        <button type="button" data-wmode="amount">Tutar yaz</button>
+      </div>
+
+      <!-- MOD 1: kayıtlı kg fiyatlı ürün + gram -->
+      <div id="weighModeGram">
+        <div class="weigh-chips" id="weighChips"></div>
+        <div id="weighForm" style="display:none; margin-bottom:12px; padding:12px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--surface-card);">
+          <div class="weigh-field" style="margin-bottom:8px;"><label>Ürün adı</label><input type="text" id="weighFormName" placeholder="Örn: Tuzlu Fıstık" style="font-size:15px; font-family:inherit;"></div>
+          <div class="weigh-field" style="margin-bottom:10px;"><label>Kilogram fiyatı (<span class="weigh-cur">₺</span>/kg)</label><input type="text" id="weighFormPrice" inputmode="decimal" placeholder="450"></div>
+          <div class="weigh-inline">
+            <button type="button" class="btn btn-primary" id="weighFormSave">💾 Kaydet</button>
+            <button type="button" class="btn btn-ghost" id="weighFormCancel">Vazgeç</button>
+          </div>
+        </div>
+        <button type="button" class="btn btn-ghost" id="weighNewBtn" style="width:100%; margin-bottom:14px;">➕ Yeni tartılı ürün kaydet</button>
+
+        <div class="weigh-field">
+          <label>Tartıda çıkan gram</label>
+          <input type="text" id="weighGram" inputmode="decimal" placeholder="Örn: 350" autocomplete="off">
+        </div>
+        <div class="weigh-quick" id="weighQuick">
+          <button type="button" data-g="100">100 g</button>
+          <button type="button" data-g="250">250 g</button>
+          <button type="button" data-g="500">500 g</button>
+          <button type="button" data-g="1000">1 kg</button>
+        </div>
+        <div class="weigh-result">
+          <div class="wr-label" id="weighResultLabel">Ürün seçin ve gramı yazın</div>
+          <div class="wr-amount"><span id="weighResultAmount">0,00</span> <span class="weigh-cur">₺</span></div>
+        </div>
+        <button class="contact-save-btn" id="weighAddGramBtn">🛒 Sepete Ekle</button>
+      </div>
+
+      <!-- MOD 2: tartıda çıkan tutarı elle yaz -->
+      <div id="weighModeAmount" style="display:none;">
+        <div class="weigh-field" style="margin-bottom:10px;"><label>Ürün adı (isteğe bağlı)</label><input type="text" id="weighAmtName" placeholder="Örn: Kuruyemiş" style="font-size:15px; font-family:inherit;"></div>
+        <div class="weigh-field">
+          <label>Tartıda çıkan tutar (<span class="weigh-cur">₺</span>)</label>
+          <input type="text" id="weighAmount" inputmode="decimal" placeholder="Örn: 157,50" autocomplete="off">
+        </div>
+        <div class="weigh-result">
+          <div class="wr-label">Sepete eklenecek tutar</div>
+          <div class="wr-amount"><span id="weighAmtShow">0,00</span> <span class="weigh-cur">₺</span></div>
+        </div>
+        <button class="contact-save-btn" id="weighAddAmtBtn">🛒 Sepete Ekle</button>
       </div>
     </div>
   </div>
@@ -5030,7 +5120,7 @@
       if(manual) alert('Önce bir bulut adresi (webhook URL) girip kaydedin.');
       return false;
     }
-    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, users, auditLog, exportedAt: new Date().toISOString() };
+    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, auditLog, exportedAt: new Date().toISOString() };
     try{
       if(manual) renderCloudBackupStatus('Gönderiliyor...', false);
       const res = await fetch(settings.cloudBackupUrl, {
@@ -5677,7 +5767,7 @@
   async function writeAllToDirectory(){
     if(!dirHandle || !dirUrunler || !dirRaporlar || !dirKullanici) return;
     try{
-      const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, users, exportedAt: new Date().toISOString() };
+      const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
       const backupHandle = await dirKullanici.getFileHandle('yedek.json', {create:true});
       const w1 = await backupHandle.createWritable();
       await w1.write(JSON.stringify(backup, null, 2));
@@ -5728,6 +5818,7 @@
           if(Array.isArray(data.creditCustomers)){ creditCustomers = data.creditCustomers; saveCreditCustomers(); }
           if(Array.isArray(data.contactItems)){ contactItems = data.contactItems; saveContactItems(); }
           if(Array.isArray(data.fastProductIds)){ fastProductIds = data.fastProductIds; saveFastList(); }
+        if(Array.isArray(data.weighProducts)){ weighProducts = data.weighProducts; saveWeighProducts(); }
           if(Array.isArray(data.users)){ users = data.users; saveUsers(); renderLockSelect(); }
         }
       }catch(e){ /* henüz yedek dosyası yok, ilk bağlantıda oluşturulacak */ }
@@ -5828,7 +5919,7 @@
   }
 
   document.getElementById('btnExportJson').addEventListener('click', ()=>{
-    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, users, exportedAt: new Date().toISOString() };
+    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
     downloadFile(JSON.stringify(backup, null, 2), 'market-veri-' + todayStr() + '.json', 'application/json');
     try{ localStorage.setItem('nur_market_last_backup', new Date().toISOString()); }catch(_){}
     renderLastBackupStatus();
@@ -5851,6 +5942,7 @@
         if(Array.isArray(data.creditCustomers)){ creditCustomers = data.creditCustomers; saveCreditCustomers(); }
         if(Array.isArray(data.contactItems)){ contactItems = data.contactItems; saveContactItems(); }
         if(Array.isArray(data.fastProductIds)){ fastProductIds = data.fastProductIds; saveFastList(); }
+        if(Array.isArray(data.weighProducts)){ weighProducts = data.weighProducts; saveWeighProducts(); }
         if(Array.isArray(data.users)) { users = data.users; saveUsers(); renderLockSelect(); }
         cart = [];
         renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); renderHistory(); updateStats(); renderFastButtons(); renderCreditCustomers();
@@ -6253,11 +6345,11 @@
           <td class="mono">${fmt(item.price)} ${settings.currency}</td>
           <td class="mono">${kdvText}</td>
           <td>
-            <div class="qty-controls">
+            ${item.weighLabel ? `<span class="qty-val" style="white-space:nowrap;">⚖️ ${escapeHtml(item.weighLabel)}</span>` : `<div class="qty-controls">
               <button class="qty-btn" data-action="dec" data-idx="${idx}" aria-label="Adet azalt">−</button>
               <span class="qty-val">${item.qty}</span>
               <button class="qty-btn" data-action="inc" data-idx="${idx}" aria-label="Adet arttır">+</button>
-            </div>
+            </div>`}
           </td>
           <td class="mono" style="font-weight:700; color:var(--primary);">${fmt(subtotalKdv)} ${settings.currency}</td>
           <td>
@@ -8870,6 +8962,198 @@
     return div.innerHTML;
   }
 
+
+  // =========================================================================
+  //  TARTILI SATIŞ  (kg fiyatı kayıtlı ürün + gram → tutar, ya da tutarı elle yaz)
+  //  Sepete tek kalem olarak (adet=1, fiyat=hesaplanan tutar) eklenir; böylece
+  //  satış, fiş, rapor ve KDV hesapları mevcut sistemle aynen çalışır.
+  // =========================================================================
+  let weighProducts = [];   // {id, name, pricePerKg}
+  let weighSelectedId = null;
+  let weighEditingId = null;
+  function loadWeighProducts(){
+    try{
+      const raw = localStorage.getItem('nur_market_weigh_products');
+      weighProducts = raw ? (JSON.parse(raw) || []) : [];
+    }catch(_){ weighProducts = []; }
+  }
+  function saveWeighProducts(){
+    try{ localStorage.setItem('nur_market_weigh_products', JSON.stringify(weighProducts)); }catch(_){}
+  }
+  // Tartılı ürünler de her değişiklikte bulut/klasör yedeğine gitsin diye persist çağrılır
+  function weighPersist(){
+    saveWeighProducts();
+    try{ persist(); }catch(_){}
+  }
+
+  const weighOverlay = document.getElementById('weighOverlay');
+  const weighGramInput = document.getElementById('weighGram');
+  const weighAmountInput = document.getElementById('weighAmount');
+
+  function weighRound2(n){ return Math.round(n * 100) / 100; }
+  function weighFmtGram(g){
+    return (g >= 1000 ? (g/1000).toLocaleString('tr-TR', {maximumFractionDigits:3}) + ' kg' : g.toLocaleString('tr-TR', {maximumFractionDigits:1}) + ' g');
+  }
+  function weighGetSelected(){ return weighProducts.find(p => p.id === weighSelectedId) || null; }
+
+  function weighRenderChips(){
+    const box = document.getElementById('weighChips');
+    box.innerHTML = '';
+    if(weighProducts.length === 0){
+      box.innerHTML = '<div class="weigh-empty">Henüz kayıtlı tartılı ürün yok. Aşağıdan "Yeni tartılı ürün kaydet" ile ekleyin (örn. Tuzlu Fıstık – 450 ₺/kg).</div>';
+      return;
+    }
+    weighProducts.forEach(p => {
+      const chip = document.createElement('div');
+      chip.className = 'weigh-chip' + (p.id === weighSelectedId ? ' sel' : '');
+      const main = document.createElement('button');
+      main.type = 'button'; main.className = 'wc-main';
+      main.innerHTML = '<b></b><small></small>';
+      main.querySelector('b').textContent = p.name;
+      main.querySelector('small').textContent = fmt(p.pricePerKg) + ' ' + settings.currency + ' / kg';
+      main.addEventListener('click', () => { weighSelectedId = p.id; weighRenderChips(); weighUpdateResult(); weighGramInput.focus(); });
+      const edit = document.createElement('button');
+      edit.type = 'button'; edit.className = 'wc-act'; edit.title = 'Düzenle'; edit.textContent = '✎';
+      edit.addEventListener('click', () => weighOpenForm(p));
+      const del = document.createElement('button');
+      del.type = 'button'; del.className = 'wc-act'; del.title = 'Sil'; del.textContent = '✕';
+      del.addEventListener('click', () => {
+        if(!confirm('"' + p.name + '" kayıtlı tartılı ürünlerden silinsin mi?')) return;
+        weighProducts = weighProducts.filter(x => x.id !== p.id);
+        if(weighSelectedId === p.id) weighSelectedId = null;
+        weighPersist(); weighRenderChips(); weighUpdateResult();
+      });
+      chip.appendChild(main); chip.appendChild(edit); chip.appendChild(del);
+      box.appendChild(chip);
+    });
+  }
+
+  function weighCalc(){
+    const p = weighGetSelected();
+    const g = parseMoneyInput(weighGramInput.value);
+    if(!p || isNaN(g) || g <= 0) return null;
+    return { product: p, gram: g, total: weighRound2(p.pricePerKg * g / 1000) };
+  }
+  function weighUpdateResult(){
+    const label = document.getElementById('weighResultLabel');
+    const amt = document.getElementById('weighResultAmount');
+    const c = weighCalc();
+    if(c){
+      label.textContent = c.product.name + ' · ' + weighFmtGram(c.gram) + ' × ' + fmt(c.product.pricePerKg) + ' ' + settings.currency + '/kg';
+      amt.textContent = fmt(c.total);
+    }else{
+      const p = weighGetSelected();
+      label.textContent = p ? (p.name + ' seçildi — gramı yazın') : 'Ürün seçin ve gramı yazın';
+      amt.textContent = fmt(0);
+    }
+  }
+
+  function weighOpenForm(p){
+    weighEditingId = p ? p.id : null;
+    document.getElementById('weighFormName').value = p ? p.name : '';
+    document.getElementById('weighFormPrice').value = p ? moneyToInputStr(p.pricePerKg) : '';
+    document.getElementById('weighForm').style.display = 'block';
+    document.getElementById('weighNewBtn').style.display = 'none';
+    document.getElementById('weighFormName').focus();
+  }
+  function weighCloseForm(){
+    weighEditingId = null;
+    document.getElementById('weighForm').style.display = 'none';
+    document.getElementById('weighNewBtn').style.display = 'block';
+  }
+  document.getElementById('weighNewBtn').addEventListener('click', () => weighOpenForm(null));
+  document.getElementById('weighFormCancel').addEventListener('click', weighCloseForm);
+  document.getElementById('weighFormSave').addEventListener('click', () => {
+    const name = document.getElementById('weighFormName').value.trim();
+    const price = parseMoneyInput(document.getElementById('weighFormPrice').value);
+    if(!name){ alert('Lütfen ürün adını yazın.'); return; }
+    if(isNaN(price) || price <= 0){ alert('Lütfen geçerli bir kilogram fiyatı yazın.'); return; }
+    if(weighEditingId){
+      const p = weighProducts.find(x => x.id === weighEditingId);
+      if(p){ p.name = name; p.pricePerKg = weighRound2(price); }
+    }else{
+      const np = { id: 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), name: name, pricePerKg: weighRound2(price) };
+      weighProducts.push(np);
+      weighSelectedId = np.id;
+    }
+    weighPersist();
+    weighCloseForm(); weighRenderChips(); weighUpdateResult();
+    weighGramInput.focus();
+  });
+
+  function weighSetMode(mode){
+    document.querySelectorAll('.weigh-tabs button').forEach(b => b.classList.toggle('active', b.dataset.wmode === mode));
+    document.getElementById('weighModeGram').style.display = mode === 'gram' ? 'block' : 'none';
+    document.getElementById('weighModeAmount').style.display = mode === 'amount' ? 'block' : 'none';
+    setTimeout(() => (mode === 'gram' ? weighGramInput : weighAmountInput).focus(), 30);
+  }
+  document.querySelectorAll('.weigh-tabs button').forEach(b => b.addEventListener('click', () => weighSetMode(b.dataset.wmode)));
+
+  function weighOpen(){
+    document.querySelectorAll('.weigh-cur').forEach(el => el.textContent = settings.currency);
+    weighGramInput.value = ''; weighAmountInput.value = '';
+    document.getElementById('weighAmtName').value = '';
+    document.getElementById('weighAmtShow').textContent = fmt(0);
+    weighCloseForm();
+    weighRenderChips(); weighUpdateResult();
+    weighOverlay.classList.add('open');
+    weighSetMode(weighProducts.length === 0 ? 'gram' : 'gram');
+  }
+  function weighClose(){ weighOverlay.classList.remove('open'); barcodeInput.focus(); }
+  document.getElementById('weighOpenBtn').addEventListener('click', weighOpen);
+  document.getElementById('weighClose').addEventListener('click', weighClose);
+  weighOverlay.addEventListener('click', (e) => { if(e.target === weighOverlay) weighClose(); });
+
+  weighGramInput.addEventListener('input', weighUpdateResult);
+  weighGramInput.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); e.stopPropagation(); document.getElementById('weighAddGramBtn').click(); } });
+  document.querySelectorAll('#weighQuick button').forEach(b => b.addEventListener('click', () => {
+    weighGramInput.value = b.dataset.g; weighUpdateResult(); weighGramInput.focus();
+  }));
+
+  weighAmountInput.addEventListener('input', () => {
+    const v = parseMoneyInput(weighAmountInput.value);
+    document.getElementById('weighAmtShow').textContent = fmt(isNaN(v) || v < 0 ? 0 : weighRound2(v));
+  });
+  weighAmountInput.addEventListener('keydown', (e) => { if(e.key === 'Enter'){ e.preventDefault(); e.stopPropagation(); document.getElementById('weighAddAmtBtn').click(); } });
+
+  function weighPushToCart(item, msg){
+    cart.push(item);
+    showScanMsg(msg, true);
+    if(settings.beepEnabled !== false) playBeep(true);
+    renderCart();
+  }
+
+  // Gram ile: kayıtlı ürün × gram → tutar
+  document.getElementById('weighAddGramBtn').addEventListener('click', () => {
+    if(!weighGetSelected()){ alert('Önce bir tartılı ürün seçin veya yeni ürün kaydedin.'); return; }
+    const c = weighCalc();
+    if(!c){ alert('Lütfen tartıda çıkan gramı yazın.'); weighGramInput.focus(); return; }
+    const gLabel = weighFmtGram(c.gram);
+    weighPushToCart({
+      id: 'weigh_' + c.product.id,
+      barcode: 'TARTI-' + c.product.id,
+      name: c.product.name + ' (' + gLabel + ')',
+      price: c.total, kdv: 0, qty: 1, image: null,
+      weighLabel: gLabel
+    }, c.product.name + ' ' + gLabel + ' · ' + fmt(c.total) + ' ' + settings.currency + ' — sepete eklendi');
+    weighGramInput.value = ''; weighUpdateResult();
+    weighClose();
+  });
+
+  // Tutar yaz: tartıdaki tutarı olduğu gibi ekle
+  document.getElementById('weighAddAmtBtn').addEventListener('click', () => {
+    const v = parseMoneyInput(weighAmountInput.value);
+    if(isNaN(v) || v <= 0){ alert('Lütfen tartıda çıkan tutarı yazın.'); weighAmountInput.focus(); return; }
+    const total = weighRound2(v);
+    const nm = document.getElementById('weighAmtName').value.trim() || 'Tartılı Ürün';
+    weighPushToCart({
+      id: 'weigh_manual', barcode: 'TARTI-TUTAR', name: nm,
+      price: total, kdv: 0, qty: 1, image: null, weighLabel: 'Tutar'
+    }, nm + ' · ' + fmt(total) + ' ' + settings.currency + ' — sepete eklendi');
+    weighAmountInput.value = '';
+    weighClose();
+  });
+
   // ================= KLAVYE KISAYOLLARI =================
   document.addEventListener('keydown', (e) => {
     const tag = (e.target.tagName || '').toLowerCase();
@@ -9361,6 +9645,7 @@
   loadAuditLog();
   loadContactItems();
   loadFastList();
+  loadWeighProducts();
   loadSettings();
   initLocalDataLoad();
   initDirConnection();
