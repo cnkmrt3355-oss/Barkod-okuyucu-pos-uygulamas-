@@ -2791,6 +2791,54 @@
     .app:not(.satis-shell) nav.tabs.sidebar { top:0; max-height:calc(100vh - 12px); padding:6px; gap:3px; }
     .app:not(.satis-shell) nav.tabs.sidebar button { padding:9px 12px; }
   }
+
+  /* ===== AÇIK TEMALAR: Hızlı Satış / Filtre / Tartılı Satış vb. okunur olsun =====
+     Sorun: açık tema düzeltmeleri sadece 'Açık' temaya yazılmıştı; krem, nane, gökyüzü,
+     kum vb. diğer açık temalarda koyu temanın açık renkli yazıları (sarı, açık mavi, açık
+     mor) açık zemin üstünde okunmuyordu. Aşağıdaki kurallar tüm açık temalara uygulanır. */
+  :root[data-tone="light"] .app.satis-shell { --sv-sky:#0369A1; --sv-red:#DC2626; }
+  :root[data-tone="light"] #panel-satis .sv-card { background:#E8EEF8; border-color:var(--border-bright); }
+  :root[data-tone="light"] #panel-satis .sv-card:hover { background:#DCE6F7; }
+  :root[data-tone="light"] #panel-satis .scan-row button { color:#0369A1; border-color:rgba(3,105,161,.5); }
+  :root[data-tone="light"] #panel-satis .weigh-open-btn { background:rgba(124,77,219,.12); color:#5B21B6; }
+  :root[data-tone="light"] #panel-satis #svFastBtn { background:rgba(245,158,11,.16); color:#92400E; }
+  :root[data-tone="light"] #panel-satis #svFastBtn.active { background:#F59E0B; color:#1B1200; }
+  :root[data-tone="light"] #panel-satis #svFilterBtn { background:rgba(37,99,235,.10); color:#1D4ED8; }
+  :root[data-tone="light"] #panel-satis #svFilterBtn.active { background:var(--sv-blue); color:#fff; }
+  :root[data-tone="light"] #panel-satis #btnBeklet { background:rgba(37,99,235,.10); color:#1D4ED8; border-color:rgba(37,99,235,.45); }
+  :root[data-tone="light"] #panel-satis #btnIptal { background:rgba(220,38,38,.08); color:#B91C1C; border-color:rgba(220,38,38,.45); }
+  :root[data-tone="light"] #panel-satis .pay-method-btn.active { background:rgba(37,99,235,.14); color:#1E40AF; }
+  :root[data-tone="light"] #panel-satis #btnTamamla:disabled { background:#BBF7D0; color:#166534; }
+  :root[data-tone="light"] #panel-satis .change-result.ok { background:rgba(22,163,74,.12); }
+  :root[data-tone="light"] #panel-satis .change-result.ok .cr-label, :root[data-tone="light"] #panel-satis .change-result.ok .cr-value { color:#15803D; }
+  :root[data-tone="light"] #panel-satis .change-result.short .cr-label, :root[data-tone="light"] #panel-satis .change-result.short .cr-value { color:#B91C1C; }
+  :root[data-tone="light"] #panel-satis .change-chip.fn { background:rgba(37,99,235,.12); color:#1D4ED8; }
+  :root[data-tone="light"] #panel-satis .change-chip.clear { color:#B91C1C; }
+  :root[data-tone="light"] #panel-satis .sales-cart-table tbody td { color:var(--ink); }
+  :root[data-tone="light"] #panel-satis .sv-card { background:#FFFFFF; border:1px solid var(--border-bright); box-shadow:0 1px 2px rgba(15,23,42,.08); }
+  :root[data-tone="light"] #panel-satis .sv-card:hover { background:#EEF4FF; border-color:var(--sv-blue); }
+  :root[data-tone="light"] #panel-satis .sv-card b { background:linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.97) 42%); color:#0F172A; }
+  :root[data-tone="light"] #panel-satis .sv-card .sv-price { background:#E0F2FE; color:#0369A1; border:1px solid rgba(3,105,161,.25); }
+  :root[data-tone="light"] #panel-satis .sv-card .sv-star { background:#F1F5F9; color:#94A3B8; border:1px solid rgba(15,23,42,.12); }
+  :root[data-tone="light"] #panel-satis .sv-card .sv-star.on { background:#FEF3C7; color:#D97706; border-color:#F59E0B; }
+
+  /* ===== ÜRÜN KARTLARI: renk geçişi (gradyan) kaldırıldı, düz isim şeridi ===== */
+  #panel-satis .sv-card b,
+  #panel-satis .sv-grid.sv-sm .sv-card b { background:rgba(5,9,18,.88); padding:5px 4px; }
+  :root[data-tone="light"] #panel-satis .sv-card b,
+  :root[data-tone="light"] #panel-satis .sv-grid.sv-sm .sv-card b { background:rgba(255,255,255,.95); color:#0F172A; padding:5px 4px; }
+  :root[data-tone="light"] #panel-satis .sv-card:hover { background:#EEF4FF; border-color:var(--sv-blue); }
+
+  /* ===== ÜRÜN KARTLARI: tek renk — isim şeridi, fiyat ve yıldız zemini kartın kendi rengi ===== */
+  #panel-satis .sv-card b,
+  #panel-satis .sv-grid.sv-sm .sv-card b { background:transparent; color:var(--ink); }
+  #panel-satis .sv-card .sv-price { background:transparent; }
+  #panel-satis .sv-card .sv-star { background:transparent; }
+  :root[data-tone="light"] #panel-satis .sv-card b,
+  :root[data-tone="light"] #panel-satis .sv-grid.sv-sm .sv-card b { background:transparent; color:#0F172A; }
+  :root[data-tone="light"] #panel-satis .sv-card .sv-price { background:transparent; border:none; }
+  :root[data-tone="light"] #panel-satis .sv-card .sv-star,
+  :root[data-tone="light"] #panel-satis .sv-card .sv-star.on { background:transparent; border:none; }
 </style>
 </head>
 <body>
@@ -5107,6 +5155,7 @@
 
   function applySettings() {
     document.documentElement.setAttribute('data-theme', settings.theme);
+    document.documentElement.setAttribute('data-tone', isLightBgTheme(settings.theme) ? 'light' : 'dark');
     updateThemeColorMeta();
     const activePalettes = isLightBgTheme(settings.theme) ? palettesLight : palettesDark;
     const pal = activePalettes[settings.palette] || activePalettes.default;
