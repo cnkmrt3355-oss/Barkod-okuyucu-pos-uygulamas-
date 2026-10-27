@@ -3526,7 +3526,7 @@
           <label for="autoClearHistoryTime" style="margin:0; font-size:13px;">Silme saati:</label>
           <input type="time" id="autoClearHistoryTime" value="23:59" style="width:auto;">
         </div>
-        <div style="font-size:11px; color:var(--ink-muted); margin-top:6px;">Seçilen saat geldiğinde (program açıksa) tüm satış geçmişi silinir. Satışlar yine normal şekilde kaydedilir. Stoklar geri eklenmez. Günlük/aylık rapor ve analiz de bu verileri kullandığı için silinen satışlar raporlarda görünmez. Program o saatte kapalıysa, bir sonraki açılışta silme yapılır.</div>
+        <div style="font-size:11px; color:var(--ink-muted); margin-top:6px;">Seçilen saat geldiğinde (program açıksa) tüm satış geçmişi silinir. Satışlar yine normal şekilde kaydedilir. Satışlara ait nakit girişleri kasa defterinden de silinir (elle girdiğin gelir/giderlere dokunulmaz). Stoklar geri eklenmez. Günlük/aylık rapor ve analiz de bu verileri kullandığı için silinen satışlar raporlarda görünmez. Program o saatte kapalıysa, bir sonraki açılışta silme yapılır.</div>
       </div>
       </div>
 
@@ -4509,6 +4509,22 @@
   }
   function saveCashLedger(){
     try{ localStorage.setItem('nur_market_cash_ledger', JSON.stringify(cashLedger)); }catch(_){}
+  }
+  // Silinen satışlara ait otomatik nakit girişlerini kasa defterinden kaldırır
+  function removeCashEntriesForSales(saleList){
+    if(!saleList || !saleList.length) return;
+    const ids = new Set(saleList.map(x => x.id));
+    const dates = new Set(saleList.map(x => x.date));
+    const before = cashLedger.length;
+    cashLedger = cashLedger.filter(e => {
+      if(e.saleId) return !ids.has(e.saleId);
+      // Eski kayıtlar: satış tarihiyle birebir eşleşen otomatik nakit girişi
+      return !(typeof e.desc === 'string' && e.desc.indexOf('Satış (nakit)') === 0 && dates.has(e.date));
+    });
+    if(cashLedger.length !== before){
+      saveCashLedger();
+      try{ renderCashLedger(); }catch(_){}
+    }
   }
   let cashSelectMode = false;
   let selectedCashIds = new Set();
@@ -5838,6 +5854,7 @@
     settings.autoClearHistoryLastDate = today;
     const count = sales.length;
     if(count > 0){
+      removeCashEntriesForSales(sales);
       sales = [];
       selectedSaleIds.clear();
       await persist();
@@ -7417,6 +7434,7 @@
         date: sale.date,
         type: 'gelir',
         desc: 'Satış (nakit) #' + sale.id.slice(-4),
+        saleId: sale.id,
         amount: cashIn
       });
       saveCashLedger();
@@ -9094,6 +9112,7 @@
     if(!checkAuth('Satış silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
     if(askConfirm && !confirm('Bu satış kalıcı olarak silinecek ve ürün stokları geri eklenecek. Emin misiniz?')) return;
     restoreStockForItems(sale.items);
+    removeCashEntriesForSales([sale]);
     sales = sales.filter(s => s.id !== id);
     selectedSaleIds.delete(id);
     await persist();
@@ -9140,7 +9159,9 @@
     if(!checkAuth('Satış silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
     if(!confirm(selectedSaleIds.size + ' satış kalıcı olarak silinecek ve ürün stokları geri eklenecek. Emin misiniz?')) return;
     const idsToDelete = new Set(selectedSaleIds);
-    sales.filter(s => idsToDelete.has(s.id)).forEach(s => restoreStockForItems(s.items));
+    const deletedSales = sales.filter(s => idsToDelete.has(s.id));
+    deletedSales.forEach(s => restoreStockForItems(s.items));
+    removeCashEntriesForSales(deletedSales);
     sales = sales.filter(s => !idsToDelete.has(s.id));
     exitHistorySelectMode();
     await persist();
@@ -9276,6 +9297,7 @@
     });
 
     if(editingSaleItems.length === 0){
+      removeCashEntriesForSales([sale]);
       sales = sales.filter(s => s.id !== editingSaleId);
     } else {
       sale.items = editingSaleItems.map(i => ({name:i.name, barcode:i.barcode, price:i.price, kdv:i.kdv||0, qty:i.qty, cost:i.cost||0}));
