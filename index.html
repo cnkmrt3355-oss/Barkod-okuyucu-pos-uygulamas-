@@ -3276,7 +3276,6 @@
         <button type="button" class="settings-tab" data-pane="kullanici" title="Kullanıcı &amp; Güvenlik"><span class="settings-tab-icon">👥</span><span class="settings-tab-label">Kullanıcı &amp; Güvenlik</span></button>
         <button type="button" class="settings-tab" data-pane="veri" title="Veri &amp; Tercihler"><span class="settings-tab-icon">💾</span><span class="settings-tab-label">Veri &amp; Tercihler</span></button>
         <button type="button" class="settings-tab" data-pane="fis" title="Fiş Tasarımı"><span class="settings-tab-icon">🧾</span><span class="settings-tab-label">Fiş Tasarımı</span></button>
-        <button type="button" class="settings-tab" data-pane="efatura" title="E-Fatura"><span class="settings-tab-icon">📃</span><span class="settings-tab-label">E-Fatura</span></button>
       </div>
 
       <div class="settings-content">
@@ -3591,35 +3590,6 @@
       </div>
       </div>
 
-      <div class="settings-pane" data-pane="efatura">
-      <div class="setting-group">
-        <label>📃 E-Fatura / E-Arşiv Entegrasyonu</label>
-        <div style="font-size:12px; color:var(--ink-muted); margin-bottom:10px; line-height:1.6;">
-          Resmi e-Fatura/e-Arşiv gönderimi, GİB onaylı bir entegratör (ör. Foriba, Paraşüt, Logo, Nesbilgi vb.) üzerinden yapılır ve o firmanın kendi API adresi ile API anahtarını gerektirir. Buraya kendi entegratörünüzün bilgilerini girerseniz her satıştan basit bir XML (UBL-TR benzeri) oluşturup o adrese gönderebilirsiniz. API bilgisi girmezseniz sistem yalnızca <strong>XML dosyasını indirir</strong>, siz de bunu entegratörünüzün portalına elle yükleyebilirsiniz.
-        </div>
-        <label style="display:flex; align-items:center; gap:8px; font-size:13px; cursor:pointer; margin-bottom:12px;"><input type="checkbox" id="efaturaEnabledCheck" style="width:auto;"> E-Fatura özelliğini etkinleştir (satış listesinde buton görünsün)</label>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-          <div>
-            <label style="font-size:12px; color:var(--ink-muted);">VKN / TCKN</label>
-            <input type="text" id="efaturaVknInput" placeholder="11 haneli VKN veya TCKN" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-          </div>
-          <div>
-            <label style="font-size:12px; color:var(--ink-muted);">Unvan / Satıcı Adı</label>
-            <input type="text" id="efaturaSenderNameInput" placeholder="İşletme unvanı" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-          </div>
-        </div>
-        <div style="margin-bottom:10px;">
-          <label style="font-size:12px; color:var(--ink-muted);">Entegratör API Adresi (opsiyonel)</label>
-          <input type="text" id="efaturaApiUrlInput" placeholder="https://entegratorunuz.com/api/fatura" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-        </div>
-        <div style="margin-bottom:12px;">
-          <label style="font-size:12px; color:var(--ink-muted);">Entegratör API Anahtarı (opsiyonel)</label>
-          <input type="password" id="efaturaApiKeyInput" placeholder="API anahtarınız" style="width:100%; padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-        </div>
-        <button type="button" class="btn btn-primary" id="btnSaveEFaturaSettings" style="width:100%;">💾 E-Fatura Ayarlarını Kaydet</button>
-        <div style="font-size:12px; margin-top:8px;" id="efaturaSettingsStatus"></div>
-      </div>
-      </div>
       </div>
       </div>
       </div>
@@ -4547,13 +4517,7 @@
     cloudBackupAuto: false,
     cloudBackupIntervalMin: 60,
     cloudBackupLastSync: '',
-    cloudBackupLastError: '',
-    // E-Fatura / E-Arşiv Entegrasyonu
-    efaturaEnabled: false,
-    efaturaApiUrl: '',
-    efaturaApiKey: '',
-    efaturaVkn: '',
-    efaturaSenderName: ''
+    cloudBackupLastError: ''
   };
 
   // Arka planı koyu olan temalar (bu listede olmayan her tema "açık" kabul edilir)
@@ -5156,91 +5120,6 @@
     if(Date.now() - last >= intervalMs) syncToCloud(false);
   }
 
-  // ================= E-FATURA / E-ARŞİV (JENERİK ENTEGRASYON) =================
-  // Not: Gerçek GİB gönderimi, kendi entegratörünüzün (Foriba, Paraşüt, Logo vb.)
-  // API sözleşmesine göre uyarlanmalıdır. Aşağıdaki XML basitleştirilmiş, UBL-TR
-  // benzeri bir taslaktır; entegratörünüzün istediği tam şema farklılık gösterebilir.
-  function buildEFaturaXml(sale){
-    const d = new Date(sale.date);
-    const isoDate = d.toISOString().slice(0,10);
-    const linesXml = (sale.items||[]).map((it,idx) => `
-    <cac:InvoiceLine>
-      <cbc:ID>${idx+1}</cbc:ID>
-      <cbc:InvoicedQuantity unitCode="C62">${it.qty}</cbc:InvoicedQuantity>
-      <cbc:LineExtensionAmount currencyID="TRY">${(it.price*it.qty).toFixed(2)}</cbc:LineExtensionAmount>
-      <cac:Item><cbc:Name>${escapeXml(it.name)}</cbc:Name></cac:Item>
-      <cac:Price><cbc:PriceAmount currencyID="TRY">${it.price.toFixed(2)}</cbc:PriceAmount></cac:Price>
-      <cbc:TaxPercent>${it.kdv||0}</cbc:TaxPercent>
-    </cac:InvoiceLine>`).join('');
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<Invoice xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
-  <cbc:ID>${escapeXml(sale.id)}</cbc:ID>
-  <cbc:IssueDate>${isoDate}</cbc:IssueDate>
-  <cac:AccountingSupplierParty>
-    <cbc:VKN>${escapeXml(settings.efaturaVkn||'')}</cbc:VKN>
-    <cbc:Name>${escapeXml(settings.efaturaSenderName||settings.businessName||'')}</cbc:Name>
-  </cac:AccountingSupplierParty>
-  <cbc:LegalMonetaryTotal currencyID="TRY">${sale.total.toFixed(2)}</cbc:LegalMonetaryTotal>${linesXml}
-</Invoice>`;
-  }
-  function escapeXml(str){
-    return String(str==null?'':str).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]));
-  }
-  async function sendEFaturaForSale(saleId){
-    const sale = (lastSaleForReceipt && lastSaleForReceipt.id === saleId) ? lastSaleForReceipt : null;
-    if(!sale) return;
-    if(!settings.efaturaVkn){
-      alert('Önce Ayarlar → E-Fatura sekmesinden VKN/TCKN ve işletme bilgilerinizi girip kaydedin.');
-      return;
-    }
-    const xml = buildEFaturaXml(sale);
-    if(!settings.efaturaApiUrl){
-      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
-      alert('Entegratör API adresi girilmediği için XML dosyası indirildi. Bu dosyayı entegratörünüzün portalına elle yükleyebilirsiniz.');
-      return;
-    }
-    try{
-      const res = await fetch(settings.efaturaApiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/xml',
-          ...(settings.efaturaApiKey ? {'Authorization': 'Bearer ' + settings.efaturaApiKey} : {})
-        },
-        body: xml
-      });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      alert('✅ E-Fatura entegratöre gönderildi (#' + sale.id.slice(-4) + ').');
-      logAudit('ayar-degisti', 'Satış #' + sale.id.slice(-4) + ' için e-Fatura gönderildi');
-    }catch(e){
-      alert('❌ E-Fatura gönderilemedi: ' + (e && e.message ? e.message : 'Bilinmeyen hata') + '\n\nEntegratörünüzün API adresini, anahtarını ve beklediği veri formatını kontrol edin. İsterseniz XML dosyasını indirip elle yükleyebilirsiniz.');
-      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
-    }
-  }
-  function initEFaturaUI(){
-    const enabledCheck = document.getElementById('efaturaEnabledCheck');
-    const vknInput = document.getElementById('efaturaVknInput');
-    const senderInput = document.getElementById('efaturaSenderNameInput');
-    const urlInput = document.getElementById('efaturaApiUrlInput');
-    const keyInput = document.getElementById('efaturaApiKeyInput');
-    const saveBtn = document.getElementById('btnSaveEFaturaSettings');
-    if(!enabledCheck) return;
-    enabledCheck.checked = !!settings.efaturaEnabled;
-    vknInput.value = settings.efaturaVkn || '';
-    senderInput.value = settings.efaturaSenderName || '';
-    urlInput.value = settings.efaturaApiUrl || '';
-    keyInput.value = settings.efaturaApiKey || '';
-    saveBtn.addEventListener('click', () => {
-      settings.efaturaEnabled = enabledCheck.checked;
-      settings.efaturaVkn = vknInput.value.trim();
-      settings.efaturaSenderName = senderInput.value.trim();
-      settings.efaturaApiUrl = urlInput.value.trim();
-      settings.efaturaApiKey = keyInput.value.trim();
-      saveSettings();
-      const statusEl = document.getElementById('efaturaSettingsStatus');
-      if(statusEl){ statusEl.style.color = 'var(--primary)'; statusEl.textContent = '✅ Kaydedildi.'; }
-      
-    });
-  }
   document.getElementById('backupReminderBadge').addEventListener('click', ()=>{
     openSettings();
     document.querySelector('#settingsTabs .settings-tab[data-pane="veri"]').click();
@@ -5470,14 +5349,6 @@
         document.getElementById('cloudBackupAutoCheck').checked = false;
         document.getElementById('cloudBackupIntervalSelect').value = '60';
         renderCloudBackupStatus();
-      }
-      const efVkn = document.getElementById('efaturaVknInput');
-      if(efVkn){
-        document.getElementById('efaturaEnabledCheck').checked = false;
-        efVkn.value = '';
-        document.getElementById('efaturaSenderNameInput').value = '';
-        document.getElementById('efaturaApiUrlInput').value = '';
-        document.getElementById('efaturaApiKeyInput').value = '';
       }
       
       closeSettings();
@@ -9240,7 +9111,6 @@
   initDirConnection();
   initCloudBackupUI();
   initProductSync();
-  initEFaturaUI();
   renderCategoryOptions();
   renderSupplierOptions();
   renderProducts();
