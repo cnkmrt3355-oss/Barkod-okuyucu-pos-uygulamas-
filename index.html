@@ -3414,6 +3414,7 @@
         <label>SKT Uyarı Eşiği (gün) — bu süreden az kalan ürünler "yaklaşıyor" sayılır</label>
         <input type="number" id="sktWarningDaysInput" min="1" max="180" step="1" value="14" autocomplete="off">
       </div>
+      </div>
 
       <div class="settings-pane" data-pane="kullanici">
       <!-- YENİ: KULLANICI YÖNETİMİ -->
@@ -4019,6 +4020,7 @@
         if (!confirm(user.name + ' kullanıcısını silmek istediğinize emin misiniz?')) return;
         users = users.filter(u => u.id !== id);
         saveUsers();
+        logAudit('kullanici-sil', user.name + ' kullanıcısı silindi');
         renderUserManagement();
         renderLockSelect();
         if (currentUser && currentUser.id === id) {
@@ -4141,6 +4143,7 @@
     document.getElementById('newUserName').value = '';
     document.getElementById('newUserPin').value = '';
     alert('Kullanıcı eklendi.');
+    logAudit('kullanici-ekle', name + ' (' + (role==='admin'?'Yönetici':'Kasiyer') + ') kullanıcısı eklendi');
     if (users.length === 1) {
       checkLock();
     }
@@ -4156,6 +4159,7 @@
     saveSettings();
     document.getElementById('authPinInput').value = '';
     alert('Yetki PIN\'i kaydedildi.');
+    logAudit('yetki-pin-degisti', 'Yetki PIN\'i güncellendi');
   });
 
   document.getElementById('lockUnlockBtn').addEventListener('click', attemptLogin);
@@ -4169,7 +4173,8 @@
   // =========================================================================
   let products = [];
   let cart = [];
-  let lastSale = null; // sadece son satışın fişi için geçici (hiçbir yere kaydedilmez)
+  let sales = []; // daima boş: satışlar hiçbir yerde saklanmaz
+  let lastSaleForReceipt = null; // sadece fiş yazdırmak için bellekte tutulur, kaydedilmez
   let heldSales = [];
   let editingId = null;
   let dirHandle = null;
@@ -4182,14 +4187,13 @@
   // ================= VERESİYE =================
   let creditCustomers = [];
 
-  // ================= KASA DEFTERİ =================
-
   // ================= STOK HAREKET GEÇMİŞİ =================
   let stockLog = [];
   function loadStockLog(){
     try{
       const raw = localStorage.getItem('nur_market_stock_log');
-      if(raw) stockLog = JSON.parse(raw) || [];
+      if(raw) stockLog = (JSON.parse(raw) || []).filter(l => l.reason !== 'satis');
+      saveStockLog();
     }catch(_){ stockLog = []; }
   }
   function loadHeldSales(){
@@ -4229,6 +4233,84 @@
     'duzenleme': '✏️ Ürün Düzenleme',
     'csv': '📄 CSV İçe Aktarma'
   };
+
+  // ================= DENETİM KAYDI (AUDIT LOG) =================
+  // Yönetici/hassas işlemlerin kim tarafından, ne zaman yapıldığını kaydeder.
+  let auditLog = [];
+  function loadAuditLog(){
+    try{
+      const raw = localStorage.getItem('nur_market_audit_log');
+      if(raw) auditLog = JSON.parse(raw) || [];
+    }catch(_){ auditLog = []; }
+  }
+  function saveAuditLog(){
+    try{ localStorage.setItem('nur_market_audit_log', JSON.stringify(auditLog)); }catch(_){}
+  }
+  const AUDIT_ACTION_LABELS = {
+    'kullanici-ekle': '👤 Kullanıcı Eklendi',
+    'kullanici-sil': '👤 Kullanıcı Silindi',
+    'yetki-pin-degisti': '🔑 Yetki PIN\'i Değiştirildi',
+    'toplu-fiyat': '💲 Toplu Fiyat/KDV Güncellemesi',
+    'urun-sil': '🗑️ Ürün Silindi',
+    'satis-sil': '🧾 Satış Silindi',
+    'ayar-degisti': '⚙️ Kritik Ayar Değiştirildi',
+    'yedek-geri-yukle': '📥 Yedekten Geri Yükleme',
+    'gun-sonu-temizlik': '🗑️ Gün Sonu Otomatik Temizlik'
+  };
+  function logAudit(action, detail){
+    auditLog.unshift({
+      id: genId(),
+      action: action,
+      detail: detail || '',
+      userId: currentUser ? currentUser.id : 'guest',
+      userName: currentUser ? currentUser.name : 'Misafir',
+      date: new Date().toISOString()
+    });
+    if(auditLog.length > 2000) auditLog.length = 2000;
+    saveAuditLog();
+    if(document.getElementById('historySubDenetim') && document.getElementById('historySubDenetim').classList.contains('active')){
+      renderAuditLog();
+    }
+  }
+  function renderAuditLog(){
+    const wrap = document.getElementById('auditLogList');
+    const empty = document.getElementById('emptyAuditLog');
+    const guard = document.getElementById('auditLogGuard');
+    if(!wrap) return;
+    const isAdmin = currentUser && currentUser.role === 'admin';
+    if(!isAdmin){
+      wrap.innerHTML = '';
+      if(empty) empty.style.display = 'none';
+      if(guard) guard.style.display = 'block';
+      return;
+    }
+    if(guard) guard.style.display = 'none';
+    wrap.innerHTML = '';
+    if(auditLog.length === 0){
+      if(empty) empty.style.display = 'block';
+      return;
+    }
+    if(empty) empty.style.display = 'none';
+    auditLog.slice(0, 300).forEach(a => {
+      const d = new Date(a.date);
+      const dateStr = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+      const label = AUDIT_ACTION_LABELS[a.action] || a.action;
+      const row = document.createElement('div');
+      row.className = 'day-detail-sale';
+      row.innerHTML = `
+        <div class="day-detail-sale-info">
+          <div class="day-detail-sale-time">${dateStr} · 👤 ${escapeHtml(a.userName)}</div>
+          <div class="day-detail-sale-items">${escapeHtml(label)}${a.detail ? ' — ' + escapeHtml(a.detail) : ''}</div>
+        </div>
+      `;
+      wrap.appendChild(row);
+    });
+  }
+
+  function toDatetimeLocalValue(dateObj){
+    const pad = n => String(n).padStart(2,'0');
+    return dateObj.getFullYear() + '-' + pad(dateObj.getMonth()+1) + '-' + pad(dateObj.getDate()) + 'T' + pad(dateObj.getHours()) + ':' + pad(dateObj.getMinutes());
+  }
 
   let currentCreditCustomerId = null;
 
@@ -5021,7 +5103,7 @@
       if(manual) alert('Önce bir bulut adresi (webhook URL) girip kaydedin.');
       return false;
     }
-    const backup = { products, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
+    const backup = { products, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, auditLog, exportedAt: new Date().toISOString() };
     try{
       if(manual) renderCloudBackupStatus('Gönderiliyor...', false);
       const res = await fetch(settings.cloudBackupUrl, {
@@ -5078,6 +5160,62 @@
   // Not: Gerçek GİB gönderimi, kendi entegratörünüzün (Foriba, Paraşüt, Logo vb.)
   // API sözleşmesine göre uyarlanmalıdır. Aşağıdaki XML basitleştirilmiş, UBL-TR
   // benzeri bir taslaktır; entegratörünüzün istediği tam şema farklılık gösterebilir.
+  function buildEFaturaXml(sale){
+    const d = new Date(sale.date);
+    const isoDate = d.toISOString().slice(0,10);
+    const linesXml = (sale.items||[]).map((it,idx) => `
+    <cac:InvoiceLine>
+      <cbc:ID>${idx+1}</cbc:ID>
+      <cbc:InvoicedQuantity unitCode="C62">${it.qty}</cbc:InvoicedQuantity>
+      <cbc:LineExtensionAmount currencyID="TRY">${(it.price*it.qty).toFixed(2)}</cbc:LineExtensionAmount>
+      <cac:Item><cbc:Name>${escapeXml(it.name)}</cbc:Name></cac:Item>
+      <cac:Price><cbc:PriceAmount currencyID="TRY">${it.price.toFixed(2)}</cbc:PriceAmount></cac:Price>
+      <cbc:TaxPercent>${it.kdv||0}</cbc:TaxPercent>
+    </cac:InvoiceLine>`).join('');
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<Invoice xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
+  <cbc:ID>${escapeXml(sale.id)}</cbc:ID>
+  <cbc:IssueDate>${isoDate}</cbc:IssueDate>
+  <cac:AccountingSupplierParty>
+    <cbc:VKN>${escapeXml(settings.efaturaVkn||'')}</cbc:VKN>
+    <cbc:Name>${escapeXml(settings.efaturaSenderName||settings.businessName||'')}</cbc:Name>
+  </cac:AccountingSupplierParty>
+  <cbc:LegalMonetaryTotal currencyID="TRY">${sale.total.toFixed(2)}</cbc:LegalMonetaryTotal>${linesXml}
+</Invoice>`;
+  }
+  function escapeXml(str){
+    return String(str==null?'':str).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]));
+  }
+  async function sendEFaturaForSale(saleId){
+    const sale = (lastSaleForReceipt && lastSaleForReceipt.id === saleId) ? lastSaleForReceipt : null;
+    if(!sale) return;
+    if(!settings.efaturaVkn){
+      alert('Önce Ayarlar → E-Fatura sekmesinden VKN/TCKN ve işletme bilgilerinizi girip kaydedin.');
+      return;
+    }
+    const xml = buildEFaturaXml(sale);
+    if(!settings.efaturaApiUrl){
+      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
+      alert('Entegratör API adresi girilmediği için XML dosyası indirildi. Bu dosyayı entegratörünüzün portalına elle yükleyebilirsiniz.');
+      return;
+    }
+    try{
+      const res = await fetch(settings.efaturaApiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/xml',
+          ...(settings.efaturaApiKey ? {'Authorization': 'Bearer ' + settings.efaturaApiKey} : {})
+        },
+        body: xml
+      });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      alert('✅ E-Fatura entegratöre gönderildi (#' + sale.id.slice(-4) + ').');
+      logAudit('ayar-degisti', 'Satış #' + sale.id.slice(-4) + ' için e-Fatura gönderildi');
+    }catch(e){
+      alert('❌ E-Fatura gönderilemedi: ' + (e && e.message ? e.message : 'Bilinmeyen hata') + '\n\nEntegratörünüzün API adresini, anahtarını ve beklediği veri formatını kontrol edin. İsterseniz XML dosyasını indirip elle yükleyebilirsiniz.');
+      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
+    }
+  }
   function initEFaturaUI(){
     const enabledCheck = document.getElementById('efaturaEnabledCheck');
     const vknInput = document.getElementById('efaturaVknInput');
@@ -5486,6 +5624,9 @@
   // ================= DİĞER JS =================
   const supportsFSAccess = ('showSaveFilePicker' in window);
   const genId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
+  function migrateSales(){
+    sales.forEach(s => { if(!s.id) s.id = genId(); if(!s.userId) s.userId = currentUser ? currentUser.id : 'guest'; });
+  }
   const todayStr = () => {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -5552,6 +5693,8 @@
       try {
         const parsed = JSON.parse(localData);
         products = Array.isArray(parsed.products) ? parsed.products : [];
+        sales = [];
+          try{ localStorage.setItem('nur_market_data', JSON.stringify({products})); }catch(_){}
         renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
       } catch(e) {}
     }
@@ -5612,13 +5755,14 @@
         if(text && text.trim()){
           const data = JSON.parse(text);
           const bp = Array.isArray(data.products) ? data.products.length : 0;
-          const hasLocal = products.length > 0;
+          const bs = 0;
+          const hasLocal = products.length > 0 || sales.length > 0;
           let loadFromFolder = !hasLocal;
           if(hasLocal && manual){
-            const keepLocal = confirm('Bu klasörde daha önce alınmış bir yedek var (' + bp + ' ürün).\n\nBu cihazdaki verileriniz: ' + products.length + ' ürün.\n\nTAMAM = Cihazdaki verilerim kalsın, klasöre bunlarla yedek alınsın (klasördeki eski yedek ayrıca saklanır).\nİPTAL = Klasördeki yedeği cihazdaki verilerle BİRLEŞTİR (hiçbir ürün ya da satış silinmez).');
+            const keepLocal = confirm('Bu klasörde daha önce alınmış bir yedek var (' + bp + ' ürün, ' + bs + ' satış).\n\nBu cihazdaki verileriniz: ' + products.length + ' ürün, ' + sales.length + ' satış.\n\nTAMAM = Cihazdaki verilerim kalsın, klasöre bunlarla yedek alınsın (klasördeki eski yedek ayrıca saklanır).\nİPTAL = Klasördeki yedeği cihazdaki verilerle BİRLEŞTİR (hiçbir ürün ya da satış silinmez).');
             loadFromFolder = !keepLocal;
           }
-          if(hasLocal && !loadFromFolder && (manual || bp > products.length)){
+          if(hasLocal && !loadFromFolder && (manual || bp > products.length || bs > sales.length)){
             try{
               const oldH = await dirKullanici.getFileHandle('yedek-onceki-' + todayStr() + '.json', {create:true});
               const w = await oldH.createWritable();
@@ -5627,7 +5771,7 @@
             }catch(e){}
           }
           if(loadFromFolder && hasLocal){
-            // BİRLEŞTİR: cihazdaki hiçbir ürün silinmez; klasörde olup cihazda olmayanlar eklenir,
+            // BİRLEŞTİR: cihazdaki hiçbir ürün/satış silinmez; klasörde olup cihazda olmayanlar eklenir,
             // eksik kalan stok/maliyet/tedarikçi/görsel gibi alanlar klasördeki yedekten tamamlanır.
             const byBc = new Map(), ids = new Set(products.map(x => x.id));
             products.forEach(x => { const k = String(x.barcode || '').trim(); if(k) byBc.set(k, x); });
@@ -5773,6 +5917,7 @@
       const data = JSON.parse(text);
       if(confirm('Mevcut veriler yedek dosyasındakilerle değiştirilecek. Devam edilsin mi?')){
         products = Array.isArray(data.products) ? data.products : [];
+        sales = [];
         if(data.settings){ settings = { ...defaultSettings, ...data.settings }; saveSettings(); applySettings(); }
         if(Array.isArray(data.creditCustomers)){ creditCustomers = data.creditCustomers; saveCreditCustomers(); }
         if(Array.isArray(data.contactItems)){ contactItems = data.contactItems; saveContactItems(); }
@@ -6767,7 +6912,7 @@
       payment: paymentInfo,
       userId: currentUser ? currentUser.id : 'guest'
     };
-    lastSale = sale;
+    lastSaleForReceipt = sale; // yalnızca bellekte; hiçbir yere kaydedilmez
     cart = [];
     activeKasaLabel = null;
     document.getElementById('discountValue').value = '';
@@ -6800,12 +6945,11 @@
     clearTimeout(showOrderSuccess._t);
     document.getElementById('orderSuccess').classList.remove('open');
     document.getElementById('totalsActionsButtons').style.display = 'flex';
-    lastSale = null;
   }
   document.getElementById('orderSuccessPrintBtn').addEventListener('click', ()=>{
     const successEl = document.getElementById('orderSuccess');
     const saleId = successEl.dataset.saleId;
-    const sale = (lastSale && lastSale.id===saleId) ? lastSale : null;
+    const sale = (lastSaleForReceipt && lastSaleForReceipt.id===saleId) ? lastSaleForReceipt : null;
     revertOrderSuccess();
     if(sale) showReceipt(sale);
   });
@@ -7983,6 +8127,7 @@
     const category = entered.trim();
     sel.forEach(p => { p.category = category; });
     await persist();
+    logAudit('toplu-kategori', sel.length + ' ürünün kategorisi ' + (category ? '"' + category + '"' : '(boş)') + ' olarak değiştirildi');
     renderCategoryOptions();
     renderProducts();
     showProductSelectMsg('📁 ' + sel.length + ' ürünün kategorisi güncellendi.');
@@ -8006,6 +8151,7 @@
     selectedProductIds.clear();
     lastSelectedProductId = null;
     await persist();
+    logAudit('urun-sil', sel.length === 1 ? sel[0].name + ' ürünü silindi' : sel.length + ' ürün toplu olarak silindi: ' + sel.slice(0, 5).map(p => p.name).join(', ') + (sel.length > 5 ? '…' : ''));
     if(editingId && ids.has(editingId)) resetForm();
     renderProducts();
     renderFastButtons(); if(typeof svRender==='function') svRender();
@@ -8299,6 +8445,7 @@
     updateStats();
     msgEl.style.color = 'var(--primary)';
     msgEl.textContent = `✅ ${targets.length} ürün güncellendi.`;
+    logAudit('toplu-fiyat', confirmMsg.replace(' Onaylıyor musunuz?',''));
     document.getElementById('bulkValueInput').value = '';
   });
 
@@ -8349,6 +8496,7 @@
         saveFastList();
         cart = cart.filter(item => item.barcode !== product.barcode);
         await persist();
+        logAudit('urun-sil', product.name + ' ürünü silindi');
         if(editingId===id) resetForm();
         renderProducts();
         renderFastButtons(); if(typeof svRender==='function') svRender();
@@ -9078,12 +9226,12 @@
 
   // ================= BAŞLAT =================
   loadUsers();
-  // Satış geçmişi ve kasa defteri kaldırıldı: eski kayıtlar cihazdan da temizlenir
-  try{ ['nur_market_cash_ledger','nur_market_audit_log'].forEach(k => localStorage.removeItem(k)); }catch(_){}
   loadCreditCustomers();
+  try{ localStorage.removeItem('nur_market_cash_ledger'); }catch(_){}
   loadStockLog();
   loadHeldSales();
   renderHeldSalesBadge();
+  loadAuditLog();
   loadContactItems();
   loadFastList();
   loadWeighProducts();
