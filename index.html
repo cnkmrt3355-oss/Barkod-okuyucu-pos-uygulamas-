@@ -2874,9 +2874,7 @@
     <button data-tab="urunler"><span class="tab-icon">📦</span><span class="tab-label">Ürünler</span></button>
     <button data-tab="kritikstok"><span class="tab-icon">⚠️</span><span class="tab-label">Kritik Stok</span></button>
     <button data-tab="skt"><span class="tab-icon">⏳</span><span class="tab-label">SKT Takip</span></button>
-    <button data-tab="gecmis"><span class="tab-icon">🧾</span><span class="tab-label">Geçmiş</span></button>
     <button data-tab="veresiye"><span class="tab-icon">💳</span><span class="tab-label">Veresiye</span></button>
-    <button data-tab="kasa"><span class="tab-icon">💰</span><span class="tab-label">Kasa</span></button>
     <button type="button" class="osk-toggle" id="oskToggle" aria-label="Ekran klavyesi" title="Ekran klavyesi: KAPALI"><span class="tab-icon">⌨️</span><span class="tab-label">Ekran Klavyesi</span></button>
     <button type="button" class="settings-btn" id="settingsBtn" aria-label="Ayarlar"><span class="tab-icon">⚙️</span><span class="tab-label">Ayarlar</span></button>
       <div class="header-actions sidebar-tools">
@@ -3242,74 +3240,6 @@
     </div>
   </section>
 
-  <!-- GEÇMİŞ -->
-  <section class="panel" id="panel-gecmis">
-    <div class="card">
-      <div class="history-subtabs">
-        <button class="history-subtab-btn active" data-target="historySubListe">📃 Tüm Satışlar</button>
-        <button class="history-subtab-btn" data-target="historySubRapor">📊 Günlük / Aylık Rapor</button>
-        <button class="history-subtab-btn" data-target="historySubAnaliz">📈 Analiz</button>
-        <button class="history-subtab-btn" data-target="historySubDenetim">🔒 Denetim Kaydı</button>
-      </div>
-
-      <div class="history-subpanel active" id="historySubListe">
-        <div class="history-toolbar">
-          <div class="section-title" style="margin:0;">Tamamlanan Satışlar</div>
-          <div class="history-toolbar-actions">
-            <button class="btn btn-ghost" id="btnHistorySelectMode">☑️ Çoklu Seçim</button>
-            <div id="historyBulkActions" style="display:none;">
-              <button class="btn btn-ghost" id="btnHistorySelectAll">Tümünü Seç</button>
-              <button class="btn btn-ghost" id="btnHistoryDeleteSelected" style="color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Seçilenleri Sil (<span id="historySelectedCount">0</span>)</button>
-              <button class="btn btn-ghost" id="btnHistoryCancelSelect">İptal</button>
-            </div>
-          </div>
-        </div>
-        <div id="salesHistory"></div>
-        <div class="empty-state" id="emptyHistory" style="display:none;">Henüz tamamlanmış satış yok.</div>
-      </div>
-
-      <div class="history-subpanel" id="historySubRapor">
-        <div class="report-month-summary" id="reportTodaySummary" style="margin-bottom:14px;"></div>
-        <div class="report-filter-row">
-          <label for="reportMonthSelect">Ay Filtresi</label>
-          <select id="reportMonthSelect"></select>
-        </div>
-        <div class="report-month-summary" id="reportMonthSummary"></div>
-        <div id="reportDayList"></div>
-        <div class="empty-state" id="emptyReport" style="display:none;">Bu ayda satış bulunamadı.</div>
-      </div>
-
-      <div class="history-subpanel" id="historySubAnaliz">
-        <div class="report-filter-row">
-          <label for="analizMonthSelect">Ay Filtresi</label>
-          <select id="analizMonthSelect"></select>
-        </div>
-        <div class="report-month-summary" id="analizProfitSummary" style="margin:14px 0;"></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;" class="analiz-grid">
-          <div>
-            <div class="section-title" style="font-size:14px; margin-bottom:8px;">🏆 En Çok Satanlar</div>
-            <div id="analizBestSellers"></div>
-          </div>
-          <div>
-            <div class="section-title" style="font-size:14px; margin-bottom:8px;">📉 En Az Satanlar</div>
-            <div id="analizWorstSellers"></div>
-          </div>
-        </div>
-        <div style="margin-top:20px;">
-          <div class="section-title" style="font-size:14px; margin-bottom:8px;">💤 Ölü Stok (Son 30 Gündür Satılmayan, Stoklu Ürünler)</div>
-          <div id="analizDeadStock"></div>
-          <div class="empty-state" id="emptyDeadStock" style="display:none;">Ölü stok bulunamadı — tüm ürünler yakın zamanda satılmış. 🎉</div>
-        </div>
-      </div>
-
-      <div class="history-subpanel" id="historySubDenetim">
-        <div id="auditLogGuard" class="empty-state" style="display:none;">🔒 Bu bölüm sadece yönetici hesaplarına açıktır.</div>
-        <div id="auditLogList"></div>
-        <div class="empty-state" id="emptyAuditLog" style="display:none;">Henüz bir denetim kaydı yok.</div>
-      </div>
-    </div>
-  </section>
-
   <!-- VERESİYE -->
   <section class="panel" id="panel-veresiye">
     <div class="card">
@@ -3325,39 +3255,6 @@
     </div>
   </section>
 
-  <!-- KASA DEFTERİ -->
-  <section class="panel" id="panel-kasa">
-    <div class="card">
-      <div class="history-toolbar" style="margin-bottom:16px;">
-        <div class="section-title" style="margin:0;">💰 Kasa Defteri</div>
-        <div class="history-toolbar-actions">
-          <button class="btn btn-ghost" id="btnKasaSelectMode">☑️ Çoklu Seçim</button>
-          <div id="kasaBulkActions" style="display:none;">
-            <button class="btn btn-ghost" id="btnKasaSelectAll">Tümünü Seç</button>
-            <button class="btn btn-ghost" id="btnKasaDeleteSelected" style="color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Seçilenleri Sil (<span id="kasaSelectedCount">0</span>)</button>
-            <button class="btn btn-ghost" id="btnKasaCancelSelect">İptal</button>
-          </div>
-        </div>
-      </div>
-      <div class="stats-grid" style="margin-bottom:16px;">
-        <div class="stat-card">
-          <div class="stat-label">Kasa Bakiyesi</div>
-          <div class="stat-value" id="cashLedgerBalance">0,00 ₺</div>
-        </div>
-      </div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
-        <select id="cashEntryType" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);">
-          <option value="gelir">➕ Nakit Giriş</option>
-          <option value="gider">➖ Gider / Nakit Çıkış</option>
-        </select>
-        <input type="text" id="cashEntryDesc" placeholder="Açıklama (örn. Kira, Fatura, Nakit satış girişi)" style="flex:1; min-width:150px; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-        <input type="number" id="cashEntryAmount" placeholder="Tutar" step="0.01" min="0.01" style="width:120px; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);" autocomplete="off">
-        <button id="cashEntryAddBtn" class="btn btn-primary" style="padding:10px 24px;">Ekle</button>
-      </div>
-      <div id="cashLedgerList"></div>
-      <div class="empty-state" id="emptyCashLedger">Henüz kasa hareketi yok.</div>
-    </div>
-  </section>
   </div>
   </div>
 
@@ -3516,18 +3413,6 @@
       <div class="setting-group">
         <label>SKT Uyarı Eşiği (gün) — bu süreden az kalan ürünler "yaklaşıyor" sayılır</label>
         <input type="number" id="sktWarningDaysInput" min="1" max="180" step="1" value="14" autocomplete="off">
-      </div>
-      <div class="setting-group">
-        <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
-          <input type="checkbox" id="autoClearHistoryToggle" style="width:auto;">
-          🗑️ Gün sonunda satış geçmişini otomatik sil
-        </label>
-        <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-          <label for="autoClearHistoryTime" style="margin:0; font-size:13px;">Silme saati:</label>
-          <input type="time" id="autoClearHistoryTime" value="23:59" style="width:auto;">
-        </div>
-        <div style="font-size:11px; color:var(--ink-muted); margin-top:6px;">Seçilen saat geldiğinde (program açıksa) tüm satış geçmişi silinir. Satışlar yine normal şekilde kaydedilir. Satışlara ait nakit girişleri kasa defterinden de silinir (elle girdiğin gelir/giderlere dokunulmaz). Stoklar geri eklenmez. Günlük/aylık rapor ve analiz de bu verileri kullandığı için silinen satışlar raporlarda görünmez. Program o saatte kapalıysa, bir sonraki açılışta silme yapılır.</div>
-      </div>
       </div>
 
       <div class="settings-pane" data-pane="kullanici">
@@ -3744,42 +3629,6 @@
   </div>
 </div>
 
-<!-- KASA HAREKETİ DÜZENLEME MODALI -->
-<div class="contact-overlay" id="cashEditOverlay">
-  <div class="contact-modal">
-    <div class="contact-header">
-      <h2>✏️ Kasa Hareketini Düzenle</h2>
-      <button class="contact-close" id="cashEditClose" aria-label="Kapat">✕</button>
-    </div>
-    <div class="contact-body">
-      <div class="credit-group">
-        <label>Tür</label>
-        <select id="cashEditType" style="width:100%; padding:10px 14px; border:1px solid var(--border); border-radius:var(--radius-md); background:var(--bg); color:var(--ink);">
-          <option value="gelir">➕ Nakit Giriş</option>
-          <option value="gider">➖ Gider / Nakit Çıkış</option>
-        </select>
-      </div>
-      <div class="credit-group">
-        <label>Açıklama</label>
-        <input type="text" id="cashEditDesc" placeholder="Açıklama" autocomplete="off">
-      </div>
-      <div class="credit-group">
-        <label>Tutar</label>
-        <input type="number" id="cashEditAmount" step="0.01" min="0.01" autocomplete="off">
-      </div>
-      <div class="credit-group">
-        <label>Tarih ve Saat</label>
-        <input type="datetime-local" id="cashEditDate" autocomplete="off">
-      </div>
-      <div style="display:flex; gap:10px;">
-        <button class="btn btn-ghost" id="cashEditDeleteBtn" style="flex:1; color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Sil</button>
-        <button class="contact-save-btn" id="cashEditSaveBtn" style="flex:2; margin-top:0;">💾 Kaydet</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
 <!-- TARTILI SATIŞ MODALI -->
 <div class="contact-overlay" id="weighOverlay">
   <div class="contact-modal">
@@ -3907,49 +3756,6 @@
       <div style="display:flex; gap:10px; margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
         <button id="creditDeleteCustomerBtn" class="btn btn-ghost" style="padding:10px 20px; color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Müşteriyi Sil</button>
         <button id="creditDetailCloseBtn" class="btn btn-primary" style="padding:10px 20px;">✖️ Kapat</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- SATIŞ DÜZENLEME MODALI -->
-<div class="sale-edit-overlay" id="saleEditOverlay">
-  <div class="sale-edit-modal">
-    <div class="sale-edit-header">
-      <h2>↩️ Satışı Düzenle / İade Al</h2>
-      <button class="sale-edit-close" id="saleEditClose" aria-label="Kapat">✕</button>
-    </div>
-    <div class="sale-edit-body">
-      <div class="sale-edit-date" id="saleEditDate"></div>
-      <p style="font-size:12.5px; color:var(--ink-muted); margin:0 0 10px;">Bir ürünü kısmen iade almak için − butonuyla adedini azaltın; stok otomatik geri eklenir. Tüm satışı iptal etmek için tüm ürünleri sıfırlayın ya da "Satışı Sil"i kullanın.</p>
-      <div id="saleEditItems"></div>
-      <div class="sale-edit-total">
-        <span>Yeni Toplam:</span>
-        <span class="mono" id="saleEditTotal">0,00 ₺</span>
-      </div>
-      <div class="sale-edit-msg" id="saleEditMsg"></div>
-      <div class="sale-edit-actions">
-        <button class="btn btn-ghost" id="saleEditDeleteBtn" style="color:var(--danger); border-color: rgba(239,68,68,0.4);">🗑️ Satışı Sil</button>
-        <div style="flex:1;"></div>
-        <button class="btn btn-ghost" id="saleEditCancelBtn">İptal</button>
-        <button class="btn btn-primary" id="saleEditSaveBtn">💾 Kaydet</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- GÜN DETAY MODALI -->
-<div class="day-detail-overlay" id="dayDetailOverlay">
-  <div class="day-detail-modal">
-    <div class="day-detail-header">
-      <h2 id="dayDetailTitle">📅 Gün Detayı</h2>
-      <button class="day-detail-close" id="dayDetailClose" aria-label="Kapat">✕</button>
-    </div>
-    <div class="day-detail-body">
-      <div id="dayDetailSales"></div>
-      <div class="day-detail-total">
-        <span>Gün Toplamı:</span>
-        <span class="mono" id="dayDetailTotal">0,00 ₺</span>
       </div>
     </div>
   </div>
@@ -4213,7 +4019,6 @@
         if (!confirm(user.name + ' kullanıcısını silmek istediğinize emin misiniz?')) return;
         users = users.filter(u => u.id !== id);
         saveUsers();
-        logAudit('kullanici-sil', user.name + ' kullanıcısı silindi');
         renderUserManagement();
         renderLockSelect();
         if (currentUser && currentUser.id === id) {
@@ -4336,7 +4141,6 @@
     document.getElementById('newUserName').value = '';
     document.getElementById('newUserPin').value = '';
     alert('Kullanıcı eklendi.');
-    logAudit('kullanici-ekle', name + ' (' + (role==='admin'?'Yönetici':'Kasiyer') + ') kullanıcısı eklendi');
     if (users.length === 1) {
       checkLock();
     }
@@ -4352,7 +4156,6 @@
     saveSettings();
     document.getElementById('authPinInput').value = '';
     alert('Yetki PIN\'i kaydedildi.');
-    logAudit('yetki-pin-degisti', 'Yetki PIN\'i güncellendi');
   });
 
   document.getElementById('lockUnlockBtn').addEventListener('click', attemptLogin);
@@ -4366,7 +4169,7 @@
   // =========================================================================
   let products = [];
   let cart = [];
-  let sales = [];
+  let lastSale = null; // sadece son satışın fişi için geçici (hiçbir yere kaydedilmez)
   let heldSales = [];
   let editingId = null;
   let dirHandle = null;
@@ -4380,7 +4183,6 @@
   let creditCustomers = [];
 
   // ================= KASA DEFTERİ =================
-  let cashLedger = [];
 
   // ================= STOK HAREKET GEÇMİŞİ =================
   let stockLog = [];
@@ -4428,292 +4230,6 @@
     'csv': '📄 CSV İçe Aktarma'
   };
 
-  // ================= DENETİM KAYDI (AUDIT LOG) =================
-  // Yönetici/hassas işlemlerin kim tarafından, ne zaman yapıldığını kaydeder.
-  let auditLog = [];
-  function loadAuditLog(){
-    try{
-      const raw = localStorage.getItem('nur_market_audit_log');
-      if(raw) auditLog = JSON.parse(raw) || [];
-    }catch(_){ auditLog = []; }
-  }
-  function saveAuditLog(){
-    try{ localStorage.setItem('nur_market_audit_log', JSON.stringify(auditLog)); }catch(_){}
-  }
-  const AUDIT_ACTION_LABELS = {
-    'kullanici-ekle': '👤 Kullanıcı Eklendi',
-    'kullanici-sil': '👤 Kullanıcı Silindi',
-    'yetki-pin-degisti': '🔑 Yetki PIN\'i Değiştirildi',
-    'toplu-fiyat': '💲 Toplu Fiyat/KDV Güncellemesi',
-    'urun-sil': '🗑️ Ürün Silindi',
-    'satis-sil': '🧾 Satış Silindi',
-    'ayar-degisti': '⚙️ Kritik Ayar Değiştirildi',
-    'yedek-geri-yukle': '📥 Yedekten Geri Yükleme',
-    'gun-sonu-temizlik': '🗑️ Gün Sonu Otomatik Temizlik'
-  };
-  function logAudit(action, detail){
-    auditLog.unshift({
-      id: genId(),
-      action: action,
-      detail: detail || '',
-      userId: currentUser ? currentUser.id : 'guest',
-      userName: currentUser ? currentUser.name : 'Misafir',
-      date: new Date().toISOString()
-    });
-    if(auditLog.length > 2000) auditLog.length = 2000;
-    saveAuditLog();
-    if(document.getElementById('historySubDenetim') && document.getElementById('historySubDenetim').classList.contains('active')){
-      renderAuditLog();
-    }
-  }
-  function renderAuditLog(){
-    const wrap = document.getElementById('auditLogList');
-    const empty = document.getElementById('emptyAuditLog');
-    const guard = document.getElementById('auditLogGuard');
-    if(!wrap) return;
-    const isAdmin = currentUser && currentUser.role === 'admin';
-    if(!isAdmin){
-      wrap.innerHTML = '';
-      if(empty) empty.style.display = 'none';
-      if(guard) guard.style.display = 'block';
-      return;
-    }
-    if(guard) guard.style.display = 'none';
-    wrap.innerHTML = '';
-    if(auditLog.length === 0){
-      if(empty) empty.style.display = 'block';
-      return;
-    }
-    if(empty) empty.style.display = 'none';
-    auditLog.slice(0, 300).forEach(a => {
-      const d = new Date(a.date);
-      const dateStr = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-      const label = AUDIT_ACTION_LABELS[a.action] || a.action;
-      const row = document.createElement('div');
-      row.className = 'day-detail-sale';
-      row.innerHTML = `
-        <div class="day-detail-sale-info">
-          <div class="day-detail-sale-time">${dateStr} · 👤 ${escapeHtml(a.userName)}</div>
-          <div class="day-detail-sale-items">${escapeHtml(label)}${a.detail ? ' — ' + escapeHtml(a.detail) : ''}</div>
-        </div>
-      `;
-      wrap.appendChild(row);
-    });
-  }
-
-  function loadCashLedger(){
-    try{
-      const raw = localStorage.getItem('nur_market_cash_ledger');
-      if(raw) cashLedger = JSON.parse(raw) || [];
-    }catch(_){ cashLedger = []; }
-  }
-  function saveCashLedger(){
-    try{ localStorage.setItem('nur_market_cash_ledger', JSON.stringify(cashLedger)); }catch(_){}
-  }
-  // Silinen satışlara ait otomatik nakit girişlerini kasa defterinden kaldırır
-  function removeCashEntriesForSales(saleList){
-    if(!saleList || !saleList.length) return;
-    const ids = new Set(saleList.map(x => x.id));
-    const dates = new Set(saleList.map(x => x.date));
-    const before = cashLedger.length;
-    cashLedger = cashLedger.filter(e => {
-      if(e.saleId) return !ids.has(e.saleId);
-      // Eski kayıtlar: satış tarihiyle birebir eşleşen otomatik nakit girişi
-      return !(typeof e.desc === 'string' && e.desc.indexOf('Satış (nakit)') === 0 && dates.has(e.date));
-    });
-    if(cashLedger.length !== before){
-      saveCashLedger();
-      try{ renderCashLedger(); }catch(_){}
-    }
-  }
-  let cashSelectMode = false;
-  let selectedCashIds = new Set();
-  let editingCashId = null;
-
-  function renderCashLedger(){
-    const listEl = document.getElementById('cashLedgerList');
-    const emptyEl = document.getElementById('emptyCashLedger');
-    const balanceEl = document.getElementById('cashLedgerBalance');
-    if(!listEl) return;
-    listEl.innerHTML = '';
-    const balance = cashLedger.reduce((sum,e)=> sum + (e.type==='gelir' ? e.amount : -e.amount), 0);
-    balanceEl.textContent = fmt(balance) + ' ' + settings.currency;
-    balanceEl.style.color = balance >= 0 ? 'var(--primary)' : 'var(--danger)';
-    if(cashLedger.length === 0){
-      emptyEl.style.display = 'block';
-      updateKasaSelectedCount();
-      return;
-    }
-    emptyEl.style.display = 'none';
-    const sorted = [...cashLedger].sort((a,b)=> new Date(b.date) - new Date(a.date));
-    sorted.forEach(entry=>{
-      const d = new Date(entry.date);
-      const dateStr = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-      const isSelected = selectedCashIds.has(entry.id);
-      const div = document.createElement('div');
-      div.className = 'credit-transaction' + (cashSelectMode && isSelected ? ' selected' : '');
-      const isIncome = entry.type === 'gelir';
-      const checkboxHtml = cashSelectMode
-        ? `<input type="checkbox" class="cash-checkbox" data-id="${entry.id}" ${isSelected ? 'checked' : ''}>`
-        : '';
-      const actionsHtml = cashSelectMode
-        ? ''
-        : `<div class="txn-actions">
-             <button class="edit-txn" data-id="${entry.id}" title="Bu hareketi düzenle">Düzenle</button>
-             <button class="remove-txn" data-id="${entry.id}" title="Bu hareketi sil" aria-label="Bu hareketi sil">✕</button>
-           </div>`;
-      div.innerHTML = `
-        ${checkboxHtml}
-        <span class="date">${dateStr}</span>
-        <span class="desc">${escapeHtml(entry.desc)}</span>
-        <span class="amount ${isIncome ? 'payment' : 'borrow'}">${isIncome ? '+' : '-'} ${fmt(entry.amount)} ${settings.currency}</span>
-        ${actionsHtml}
-      `;
-      listEl.appendChild(div);
-    });
-    listEl.querySelectorAll('.remove-txn').forEach(btn=>{
-      btn.addEventListener('click', function(){
-        if(!checkAuth('Kasa hareketi silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-        if(!confirm('Bu kasa hareketini silmek istediğinize emin misiniz?')) return;
-        cashLedger = cashLedger.filter(e=>e.id !== this.dataset.id);
-        selectedCashIds.delete(this.dataset.id);
-        saveCashLedger();
-        renderCashLedger();
-      });
-    });
-    listEl.querySelectorAll('.edit-txn').forEach(btn=>{
-      btn.addEventListener('click', function(){
-        openCashEdit(this.dataset.id);
-      });
-    });
-    listEl.querySelectorAll('.cash-checkbox').forEach(cb=>{
-      cb.addEventListener('change', function(){
-        if(this.checked) selectedCashIds.add(this.dataset.id); else selectedCashIds.delete(this.dataset.id);
-        const row = this.closest('.credit-transaction');
-        if(row) row.classList.toggle('selected', this.checked);
-        updateKasaSelectedCount();
-      });
-    });
-    updateKasaSelectedCount();
-  }
-
-  function updateKasaSelectedCount(){
-    const el = document.getElementById('kasaSelectedCount');
-    if(el) el.textContent = selectedCashIds.size;
-  }
-
-  const btnKasaSelectMode = document.getElementById('btnKasaSelectMode');
-  const kasaBulkActions = document.getElementById('kasaBulkActions');
-
-  function exitKasaSelectMode(){
-    cashSelectMode = false;
-    btnKasaSelectMode.classList.remove('active');
-    kasaBulkActions.style.display = 'none';
-    selectedCashIds.clear();
-    renderCashLedger();
-  }
-
-  btnKasaSelectMode.addEventListener('click', () => {
-    cashSelectMode = !cashSelectMode;
-    btnKasaSelectMode.classList.toggle('active', cashSelectMode);
-    kasaBulkActions.style.display = cashSelectMode ? 'flex' : 'none';
-    if(!cashSelectMode) selectedCashIds.clear();
-    renderCashLedger();
-  });
-
-  document.getElementById('btnKasaSelectAll').addEventListener('click', () => {
-    const visibleIds = cashLedger.map(e => e.id);
-    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedCashIds.has(id));
-    if(allSelected){
-      visibleIds.forEach(id => selectedCashIds.delete(id));
-    } else {
-      visibleIds.forEach(id => selectedCashIds.add(id));
-    }
-    renderCashLedger();
-  });
-
-  document.getElementById('btnKasaCancelSelect').addEventListener('click', exitKasaSelectMode);
-
-  document.getElementById('btnKasaDeleteSelected').addEventListener('click', () => {
-    if(selectedCashIds.size === 0) return;
-    if(!checkAuth('Kasa seçili hareketleri silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-    if(!confirm(selectedCashIds.size + ' kasa hareketi kalıcı olarak silinecek. Emin misiniz?')) return;
-    const idsToDelete = new Set(selectedCashIds);
-    cashLedger = cashLedger.filter(e => !idsToDelete.has(e.id));
-    exitKasaSelectMode();
-    saveCashLedger();
-    renderCashLedger();
-  });
-
-  function toDatetimeLocalValue(dateObj){
-    const pad = n => String(n).padStart(2,'0');
-    return dateObj.getFullYear() + '-' + pad(dateObj.getMonth()+1) + '-' + pad(dateObj.getDate()) + 'T' + pad(dateObj.getHours()) + ':' + pad(dateObj.getMinutes());
-  }
-
-  function openCashEdit(id){
-    const entry = cashLedger.find(e => e.id === id);
-    if(!entry) return;
-    editingCashId = id;
-    document.getElementById('cashEditType').value = entry.type;
-    document.getElementById('cashEditDesc').value = entry.desc;
-    document.getElementById('cashEditAmount').value = entry.amount;
-    document.getElementById('cashEditDate').value = toDatetimeLocalValue(new Date(entry.date));
-    document.getElementById('cashEditOverlay').classList.add('open');
-  }
-  function closeCashEdit(){
-    document.getElementById('cashEditOverlay').classList.remove('open');
-    editingCashId = null;
-  }
-  document.getElementById('cashEditClose').addEventListener('click', closeCashEdit);
-  document.getElementById('cashEditOverlay').addEventListener('click', (e)=>{
-    if(e.target === document.getElementById('cashEditOverlay')) closeCashEdit();
-  });
-  document.getElementById('cashEditSaveBtn').addEventListener('click', () => {
-    if(!editingCashId) return;
-    const entry = cashLedger.find(e => e.id === editingCashId);
-    if(!entry) return;
-    const type = document.getElementById('cashEditType').value;
-    const desc = document.getElementById('cashEditDesc').value.trim();
-    const amount = parseFloat(document.getElementById('cashEditAmount').value);
-    const dateVal = document.getElementById('cashEditDate').value;
-    if(isNaN(amount) || amount <= 0){ alert('Geçerli bir tutar girin.'); return; }
-    if(!dateVal){ alert('Geçerli bir tarih seçin.'); return; }
-    entry.type = type;
-    entry.desc = desc || (type==='gelir' ? 'Nakit Giriş' : 'Gider');
-    entry.amount = amount;
-    entry.date = new Date(dateVal).toISOString();
-    saveCashLedger();
-    renderCashLedger();
-    closeCashEdit();
-  });
-  document.getElementById('cashEditDeleteBtn').addEventListener('click', () => {
-    if(!editingCashId) return;
-    if(!checkAuth('Kasa hareketi silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-    if(!confirm('Bu kasa hareketini silmek istediğinize emin misiniz?')) return;
-    cashLedger = cashLedger.filter(e => e.id !== editingCashId);
-    selectedCashIds.delete(editingCashId);
-    saveCashLedger();
-    renderCashLedger();
-    closeCashEdit();
-  });
-
-  document.getElementById('cashEntryAddBtn').addEventListener('click', ()=>{
-    const type = document.getElementById('cashEntryType').value;
-    const desc = document.getElementById('cashEntryDesc').value.trim();
-    const amount = parseFloat(document.getElementById('cashEntryAmount').value);
-    if(isNaN(amount) || amount <= 0){ showScanMsg('Geçerli bir tutar girin.', false); return; }
-    cashLedger.push({
-      id: 'cl' + Date.now().toString(36) + Math.random().toString(36).slice(2,4),
-      date: new Date().toISOString(),
-      type: type,
-      desc: desc || (type==='gelir' ? 'Nakit Giriş' : 'Gider'),
-      amount: amount
-    });
-    saveCashLedger();
-    renderCashLedger();
-    document.getElementById('cashEntryDesc').value = '';
-    document.getElementById('cashEntryAmount').value = '';
-  });
   let currentCreditCustomerId = null;
 
   function loadCreditCustomers() {
@@ -4925,9 +4441,6 @@
     beepEnabled: true,
     pin: '',
     autoLockMinutes: 0,
-    autoClearHistoryEnabled: false,
-    autoClearHistoryTime: '23:59',
-    autoClearHistoryLastDate: '',
     sktWarningDays: 14,
     receiptWidth: '80',
     receiptFontSize: 13,
@@ -5234,10 +4747,6 @@
     if(beepToggle) beepToggle.checked = settings.beepEnabled !== false;
     const autoLockEl = document.getElementById('autoLockSelect');
     if(autoLockEl) autoLockEl.value = String(settings.autoLockMinutes || 0);
-    const acTog = document.getElementById('autoClearHistoryToggle');
-    if(acTog) acTog.checked = !!settings.autoClearHistoryEnabled;
-    const acTime = document.getElementById('autoClearHistoryTime');
-    if(acTime) acTime.value = settings.autoClearHistoryTime || '23:59';
     document.getElementById('defaultStock').value = settings.defaultStock;
     document.getElementById('barcodeDelay').value = settings.barcodeDelay;
     const sktInputEl = document.getElementById('sktWarningDaysInput');
@@ -5303,7 +4812,7 @@
     };
     renderCart();
     renderProducts();
-    renderHistory();
+    
     updateStats();
     renderFastButtons(); if(typeof svRender==='function') svRender();
     renderCreditCustomers();
@@ -5512,7 +5021,7 @@
       if(manual) alert('Önce bir bulut adresi (webhook URL) girip kaydedin.');
       return false;
     }
-    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, auditLog, exportedAt: new Date().toISOString() };
+    const backup = { products, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
     try{
       if(manual) renderCloudBackupStatus('Gönderiliyor...', false);
       const res = await fetch(settings.cloudBackupUrl, {
@@ -5569,62 +5078,6 @@
   // Not: Gerçek GİB gönderimi, kendi entegratörünüzün (Foriba, Paraşüt, Logo vb.)
   // API sözleşmesine göre uyarlanmalıdır. Aşağıdaki XML basitleştirilmiş, UBL-TR
   // benzeri bir taslaktır; entegratörünüzün istediği tam şema farklılık gösterebilir.
-  function buildEFaturaXml(sale){
-    const d = new Date(sale.date);
-    const isoDate = d.toISOString().slice(0,10);
-    const linesXml = (sale.items||[]).map((it,idx) => `
-    <cac:InvoiceLine>
-      <cbc:ID>${idx+1}</cbc:ID>
-      <cbc:InvoicedQuantity unitCode="C62">${it.qty}</cbc:InvoicedQuantity>
-      <cbc:LineExtensionAmount currencyID="TRY">${(it.price*it.qty).toFixed(2)}</cbc:LineExtensionAmount>
-      <cac:Item><cbc:Name>${escapeXml(it.name)}</cbc:Name></cac:Item>
-      <cac:Price><cbc:PriceAmount currencyID="TRY">${it.price.toFixed(2)}</cbc:PriceAmount></cac:Price>
-      <cbc:TaxPercent>${it.kdv||0}</cbc:TaxPercent>
-    </cac:InvoiceLine>`).join('');
-    return `<?xml version="1.0" encoding="UTF-8"?>
-<Invoice xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2" xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2">
-  <cbc:ID>${escapeXml(sale.id)}</cbc:ID>
-  <cbc:IssueDate>${isoDate}</cbc:IssueDate>
-  <cac:AccountingSupplierParty>
-    <cbc:VKN>${escapeXml(settings.efaturaVkn||'')}</cbc:VKN>
-    <cbc:Name>${escapeXml(settings.efaturaSenderName||settings.businessName||'')}</cbc:Name>
-  </cac:AccountingSupplierParty>
-  <cbc:LegalMonetaryTotal currencyID="TRY">${sale.total.toFixed(2)}</cbc:LegalMonetaryTotal>${linesXml}
-</Invoice>`;
-  }
-  function escapeXml(str){
-    return String(str==null?'':str).replace(/[<>&'"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;',"'":'&apos;','"':'&quot;'}[c]));
-  }
-  async function sendEFaturaForSale(saleId){
-    const sale = sales.find(s => s.id === saleId);
-    if(!sale) return;
-    if(!settings.efaturaVkn){
-      alert('Önce Ayarlar → E-Fatura sekmesinden VKN/TCKN ve işletme bilgilerinizi girip kaydedin.');
-      return;
-    }
-    const xml = buildEFaturaXml(sale);
-    if(!settings.efaturaApiUrl){
-      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
-      alert('Entegratör API adresi girilmediği için XML dosyası indirildi. Bu dosyayı entegratörünüzün portalına elle yükleyebilirsiniz.');
-      return;
-    }
-    try{
-      const res = await fetch(settings.efaturaApiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/xml',
-          ...(settings.efaturaApiKey ? {'Authorization': 'Bearer ' + settings.efaturaApiKey} : {})
-        },
-        body: xml
-      });
-      if(!res.ok) throw new Error('HTTP ' + res.status);
-      alert('✅ E-Fatura entegratöre gönderildi (#' + sale.id.slice(-4) + ').');
-      logAudit('ayar-degisti', 'Satış #' + sale.id.slice(-4) + ' için e-Fatura gönderildi');
-    }catch(e){
-      alert('❌ E-Fatura gönderilemedi: ' + (e && e.message ? e.message : 'Bilinmeyen hata') + '\n\nEntegratörünüzün API adresini, anahtarını ve beklediği veri formatını kontrol edin. İsterseniz XML dosyasını indirip elle yükleyebilirsiniz.');
-      downloadFile(xml, 'efatura-' + sale.id.slice(-6) + '.xml', 'application/xml');
-    }
-  }
   function initEFaturaUI(){
     const enabledCheck = document.getElementById('efaturaEnabledCheck');
     const vknInput = document.getElementById('efaturaVknInput');
@@ -5647,7 +5100,7 @@
       saveSettings();
       const statusEl = document.getElementById('efaturaSettingsStatus');
       if(statusEl){ statusEl.style.color = 'var(--primary)'; statusEl.textContent = '✅ Kaydedildi.'; }
-      renderHistory();
+      
     });
   }
   document.getElementById('backupReminderBadge').addEventListener('click', ()=>{
@@ -5835,49 +5288,6 @@
     saveSettings();
   });
 
-  // ---- Gün sonu otomatik satış geçmişi silme ----
-  function acTodayStr(){
-    const d = new Date();
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function acTimePassedToday(){
-    const t = (settings.autoClearHistoryTime || '23:59').split(':');
-    const now = new Date();
-    const target = new Date(); target.setHours(parseInt(t[0],10)||0, parseInt(t[1],10)||0, 0, 0);
-    return now >= target;
-  }
-  async function autoClearHistoryCheck(){
-    if(!settings.autoClearHistoryEnabled) return;
-    const today = acTodayStr();
-    if(settings.autoClearHistoryLastDate === today) return;
-    if(!acTimePassedToday()) return;
-    settings.autoClearHistoryLastDate = today;
-    const count = sales.length;
-    if(count > 0){
-      removeCashEntriesForSales(sales);
-      sales = [];
-      selectedSaleIds.clear();
-      await persist();
-      try{ logAudit('gun-sonu-temizlik', 'Gün sonu otomatik temizlik: ' + count + ' satış kaydı silindi'); }catch(_){}
-      renderHistory();
-      updateStats();
-    }
-    saveSettings();
-  }
-  document.getElementById('autoClearHistoryToggle').addEventListener('change', function(){
-    settings.autoClearHistoryEnabled = this.checked;
-    // Saat bugün zaten geçtiyse, hemen silinmesin; ilk silme yarın olsun
-    settings.autoClearHistoryLastDate = (this.checked && acTimePassedToday()) ? acTodayStr() : '';
-    saveSettings();
-  });
-  document.getElementById('autoClearHistoryTime').addEventListener('change', function(){
-    settings.autoClearHistoryTime = this.value || '23:59';
-    settings.autoClearHistoryLastDate = (settings.autoClearHistoryEnabled && acTimePassedToday()) ? acTodayStr() : '';
-    saveSettings();
-  });
-  setInterval(autoClearHistoryCheck, 30000);
-  setTimeout(autoClearHistoryCheck, 3000);
-
   document.getElementById('autoLockSelect').addEventListener('change', function() {
     settings.autoLockMinutes = parseInt(this.value, 10) || 0;
     saveSettings();
@@ -5931,7 +5341,7 @@
         document.getElementById('efaturaApiUrlInput').value = '';
         document.getElementById('efaturaApiKeyInput').value = '';
       }
-      renderHistory();
+      
       closeSettings();
     }
   });
@@ -6076,9 +5486,6 @@
   // ================= DİĞER JS =================
   const supportsFSAccess = ('showSaveFilePicker' in window);
   const genId = () => Date.now().toString(36) + Math.random().toString(36).slice(2,6);
-  function migrateSales(){
-    sales.forEach(s => { if(!s.id) s.id = genId(); if(!s.userId) s.userId = currentUser ? currentUser.id : 'guest'; });
-  }
   const todayStr = () => {
     const d = new Date();
     return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
@@ -6145,9 +5552,7 @@
       try {
         const parsed = JSON.parse(localData);
         products = Array.isArray(parsed.products) ? parsed.products : [];
-        sales = Array.isArray(parsed.sales) ? parsed.sales : [];
-        migrateSales();
-        renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); renderHistory(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
+        renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
       } catch(e) {}
     }
     setStatus('Verileriniz <strong>cihaz hafızasında otomatik saklanmaktadır</strong>. Cihazlar arası taşımak için <strong>"Tam Yedek İndir"</strong> butonunu, ya da üstteki <strong>otomatik klasör yedeklemesini</strong> kullanabilirsiniz.');
@@ -6162,48 +5567,10 @@
     if(el) el.innerHTML = html;
   }
 
-  function buildSalesReportText(){
-    if(sales.length === 0) return 'BARKODLU SATIŞ PROGRAMI — SATIŞ RAPORU\nOluşturulma: ' + new Date().toLocaleString('tr-TR') + '\n\nHenüz satış bulunmuyor.';
-    const monthMap = buildMonthMap();
-    const monthKeys = Array.from(monthMap.keys()).sort().reverse();
-    const lines = [];
-    lines.push('BARKODLU SATIŞ PROGRAMI — SATIŞ RAPORU');
-    lines.push('Oluşturulma: ' + new Date().toLocaleString('tr-TR'));
-    lines.push('');
-    monthKeys.forEach(mk => {
-      const monthSales = monthMap.get(mk);
-      const monthTotal = monthSales.reduce((s,x) => s + x.total, 0);
-      lines.push('==============================');
-      lines.push(monthLabel(mk).toUpperCase() + ' — Aylık Toplam: ' + fmt(monthTotal) + ' ' + settings.currency + ' (' + monthSales.length + ' satış)');
-      lines.push('==============================');
-      const dayMap = new Map();
-      monthSales.forEach(s => {
-        const dk = dayKeyOf(new Date(s.date));
-        if(!dayMap.has(dk)) dayMap.set(dk, []);
-        dayMap.get(dk).push(s);
-      });
-      const dayKeys = Array.from(dayMap.keys()).sort().reverse();
-      dayKeys.forEach(dk => {
-        const daySales = dayMap.get(dk);
-        const dayTotal = daySales.reduce((s,x) => s + x.total, 0);
-        const dLabel = new Date(daySales[0].date).toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-        lines.push('');
-        lines.push('  ' + dLabel + ' — Günlük Toplam: ' + fmt(dayTotal) + ' ' + settings.currency + ' (' + daySales.length + ' satış)');
-        [...daySales].sort((a,b) => new Date(a.date) - new Date(b.date)).forEach(s => {
-          const t = new Date(s.date).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-          const itemsStr = s.items.map(i => i.name + ' x' + i.qty).join(', ');
-          lines.push('    [' + t + '] ' + itemsStr + '  =  ' + fmt(s.total) + ' ' + settings.currency);
-        });
-      });
-      lines.push('');
-    });
-    return lines.join('\n');
-  }
-
   async function writeAllToDirectory(){
     if(!dirHandle || !dirUrunler || !dirRaporlar || !dirKullanici) return;
     try{
-      const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
+      const backup = { products, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
       const backupHandle = await dirKullanici.getFileHandle('yedek.json', {create:true});
       const w1 = await backupHandle.createWritable();
       await w1.write(JSON.stringify(backup, null, 2));
@@ -6214,15 +5581,6 @@
       await w2.write(JSON.stringify(products, null, 2));
       await w2.close();
 
-      const satislarHandle = await dirRaporlar.getFileHandle('satislar.json', {create:true});
-      const w3 = await satislarHandle.createWritable();
-      await w3.write(JSON.stringify(sales, null, 2));
-      await w3.close();
-
-      const raporHandle = await dirRaporlar.getFileHandle('satis-raporu.txt', {create:true});
-      const w4 = await raporHandle.createWritable();
-      await w4.write(buildSalesReportText());
-      await w4.close();
     }catch(e){}
   }
 
@@ -6254,14 +5612,13 @@
         if(text && text.trim()){
           const data = JSON.parse(text);
           const bp = Array.isArray(data.products) ? data.products.length : 0;
-          const bs = Array.isArray(data.sales) ? data.sales.length : 0;
-          const hasLocal = products.length > 0 || sales.length > 0;
+          const hasLocal = products.length > 0;
           let loadFromFolder = !hasLocal;
           if(hasLocal && manual){
-            const keepLocal = confirm('Bu klasörde daha önce alınmış bir yedek var (' + bp + ' ürün, ' + bs + ' satış).\n\nBu cihazdaki verileriniz: ' + products.length + ' ürün, ' + sales.length + ' satış.\n\nTAMAM = Cihazdaki verilerim kalsın, klasöre bunlarla yedek alınsın (klasördeki eski yedek ayrıca saklanır).\nİPTAL = Klasördeki yedeği cihazdaki verilerle BİRLEŞTİR (hiçbir ürün ya da satış silinmez).');
+            const keepLocal = confirm('Bu klasörde daha önce alınmış bir yedek var (' + bp + ' ürün).\n\nBu cihazdaki verileriniz: ' + products.length + ' ürün.\n\nTAMAM = Cihazdaki verilerim kalsın, klasöre bunlarla yedek alınsın (klasördeki eski yedek ayrıca saklanır).\nİPTAL = Klasördeki yedeği cihazdaki verilerle BİRLEŞTİR (hiçbir ürün ya da satış silinmez).');
             loadFromFolder = !keepLocal;
           }
-          if(hasLocal && !loadFromFolder && (manual || bp > products.length || bs > sales.length)){
+          if(hasLocal && !loadFromFolder && (manual || bp > products.length)){
             try{
               const oldH = await dirKullanici.getFileHandle('yedek-onceki-' + todayStr() + '.json', {create:true});
               const w = await oldH.createWritable();
@@ -6270,7 +5627,7 @@
             }catch(e){}
           }
           if(loadFromFolder && hasLocal){
-            // BİRLEŞTİR: cihazdaki hiçbir ürün/satış silinmez; klasörde olup cihazda olmayanlar eklenir,
+            // BİRLEŞTİR: cihazdaki hiçbir ürün silinmez; klasörde olup cihazda olmayanlar eklenir,
             // eksik kalan stok/maliyet/tedarikçi/görsel gibi alanlar klasördeki yedekten tamamlanır.
             const byBc = new Map(), ids = new Set(products.map(x => x.id));
             products.forEach(x => { const k = String(x.barcode || '').trim(); if(k) byBc.set(k, x); });
@@ -6286,10 +5643,6 @@
                 });
               }
             });
-            const skey = x => (x.id != null ? 'i' + x.id : 'd' + x.date + '|' + x.total);
-            const sk = new Set(sales.map(skey));
-            (Array.isArray(data.sales) ? data.sales : []).forEach(x => { if(!sk.has(skey(x))){ sales.push(x); sk.add(skey(x)); } });
-            migrateSales();
             if(Array.isArray(data.fastProductIds)){
               data.fastProductIds.forEach(id => { if(fastProductIds.indexOf(id) === -1 && products.some(x => x.id === id)) fastProductIds.push(id); });
               saveFastList();
@@ -6297,7 +5650,6 @@
             try{ await persist(); }catch(e){}
           }else if(loadFromFolder){
             if(Array.isArray(data.products)) products = data.products;
-            if(Array.isArray(data.sales)){ sales = data.sales; migrateSales(); }
             if(data.settings){ settings = { ...defaultSettings, ...data.settings }; saveSettings(); applySettings(); }
             if(Array.isArray(data.creditCustomers)){ creditCustomers = data.creditCustomers; saveCreditCustomers(); }
             if(Array.isArray(data.contactItems)){ contactItems = data.contactItems; saveContactItems(); }
@@ -6313,7 +5665,7 @@
       btnUnlinkFolder.style.display = 'inline-block';
       setFolderStatus('Bağlı klasör: <strong>' + escapeHtml(rootHandle.name) + ' / Barkodlu Satış Programı</strong> — Ürünler, Satış Raporları ve Kullanıcı Verileri alt klasörlerine otomatik kaydediliyor.');
 
-      renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); renderHistory(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
+      renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
       await writeAllToDirectory();
       checkBackupReminder();
     }catch(e){
@@ -6386,7 +5738,7 @@
 
   async function persist(){
     try {
-      localStorage.setItem('nur_market_data', JSON.stringify({products, sales}));
+      localStorage.setItem('nur_market_data', JSON.stringify({products}));
     } catch(e) {}
     try{ fbPushChanges(); }catch(_){}
     if(dirHandle){ await writeAllToDirectory(); }
@@ -6404,7 +5756,7 @@
   }
 
   document.getElementById('btnExportJson').addEventListener('click', ()=>{
-    const backup = { products, sales, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
+    const backup = { products, settings, creditCustomers, contactItems, fastProductIds, weighProducts, users, exportedAt: new Date().toISOString() };
     downloadFile(JSON.stringify(backup, null, 2), 'market-veri-' + todayStr() + '.json', 'application/json');
     try{ localStorage.setItem('nur_market_last_backup', new Date().toISOString()); }catch(_){}
     renderLastBackupStatus();
@@ -6421,8 +5773,6 @@
       const data = JSON.parse(text);
       if(confirm('Mevcut veriler yedek dosyasındakilerle değiştirilecek. Devam edilsin mi?')){
         products = Array.isArray(data.products) ? data.products : [];
-        sales = Array.isArray(data.sales) ? data.sales : [];
-        migrateSales();
         if(data.settings){ settings = { ...defaultSettings, ...data.settings }; saveSettings(); applySettings(); }
         if(Array.isArray(data.creditCustomers)){ creditCustomers = data.creditCustomers; saveCreditCustomers(); }
         if(Array.isArray(data.contactItems)){ contactItems = data.contactItems; saveContactItems(); }
@@ -6430,7 +5780,7 @@
         if(Array.isArray(data.weighProducts)){ weighProducts = data.weighProducts; saveWeighProducts(); }
         if(Array.isArray(data.users)) { users = data.users; saveUsers(); renderLockSelect(); }
         cart = [];
-        renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); renderHistory(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
+        renderCategoryOptions(); renderSupplierOptions(); renderProducts(); renderCart(); updateStats(); renderFastButtons(); if(typeof svRender==='function') svRender(); renderCreditCustomers();
         await persist();
         showScanMsg('Yedek dosyası başarıyla yüklendi.', true);
       }
@@ -7404,10 +6754,6 @@
       }
     });
     const saleId = genId();
-    cart.forEach(item=>{
-      const product = products.find(p=>p.barcode===item.barcode);
-      if(product) logStock(product, -item.qty, 'satis', 'Satış #' + saleId.slice(-4));
-    });
     const saleItems = cart.map(i=>{
       const prod = products.find(p=>p.barcode===i.barcode);
       return {name:i.name, barcode:i.barcode, price:i.price, kdv:i.kdv||0, qty:i.qty, cost: (prod && prod.cost) ? prod.cost : 0};
@@ -7421,25 +6767,10 @@
       payment: paymentInfo,
       userId: currentUser ? currentUser.id : 'guest'
     };
-    sales.unshift(sale);
+    lastSale = sale;
     cart = [];
     activeKasaLabel = null;
     document.getElementById('discountValue').value = '';
-    // Nakit girişini otomatik kasa defterine işle
-    let cashIn = 0;
-    if(paymentInfo.method === 'cash') cashIn = finalTotal;
-    if(cashIn > 0){
-      cashLedger.push({
-        id: 'cl' + Date.now().toString(36) + Math.random().toString(36).slice(2,4),
-        date: sale.date,
-        type: 'gelir',
-        desc: 'Satış (nakit) #' + sale.id.slice(-4),
-        saleId: sale.id,
-        amount: cashIn
-      });
-      saveCashLedger();
-      renderCashLedger();
-    }
     // Ödeme yöntemini varsayılana (Nakit) döndür
     currentPayMethod = 'cash';
     document.querySelectorAll('.pay-method-btn').forEach(b=>b.classList.toggle('active', b.dataset.method==='cash'));
@@ -7448,7 +6779,7 @@
 
     renderCart();
     renderProducts();
-    renderHistory();
+    
     await persist();
     showOrderSuccess(sale);
   });
@@ -7469,11 +6800,12 @@
     clearTimeout(showOrderSuccess._t);
     document.getElementById('orderSuccess').classList.remove('open');
     document.getElementById('totalsActionsButtons').style.display = 'flex';
+    lastSale = null;
   }
   document.getElementById('orderSuccessPrintBtn').addEventListener('click', ()=>{
     const successEl = document.getElementById('orderSuccess');
     const saleId = successEl.dataset.saleId;
-    const sale = sales.find(s=>s.id===saleId);
+    const sale = (lastSale && lastSale.id===saleId) ? lastSale : null;
     revertOrderSuccess();
     if(sale) showReceipt(sale);
   });
@@ -8651,7 +7983,6 @@
     const category = entered.trim();
     sel.forEach(p => { p.category = category; });
     await persist();
-    logAudit('toplu-kategori', sel.length + ' ürünün kategorisi ' + (category ? '"' + category + '"' : '(boş)') + ' olarak değiştirildi');
     renderCategoryOptions();
     renderProducts();
     showProductSelectMsg('📁 ' + sel.length + ' ürünün kategorisi güncellendi.');
@@ -8675,7 +8006,6 @@
     selectedProductIds.clear();
     lastSelectedProductId = null;
     await persist();
-    logAudit('urun-sil', sel.length === 1 ? sel[0].name + ' ürünü silindi' : sel.length + ' ürün toplu olarak silindi: ' + sel.slice(0, 5).map(p => p.name).join(', ') + (sel.length > 5 ? '…' : ''));
     if(editingId && ids.has(editingId)) resetForm();
     renderProducts();
     renderFastButtons(); if(typeof svRender==='function') svRender();
@@ -8969,7 +8299,6 @@
     updateStats();
     msgEl.style.color = 'var(--primary)';
     msgEl.textContent = `✅ ${targets.length} ürün güncellendi.`;
-    logAudit('toplu-fiyat', confirmMsg.replace(' Onaylıyor musunuz?',''));
     document.getElementById('bulkValueInput').value = '';
   });
 
@@ -9020,7 +8349,6 @@
         saveFastList();
         cart = cart.filter(item => item.barcode !== product.barcode);
         await persist();
-        logAudit('urun-sil', product.name + ' ürünü silindi');
         if(editingId===id) resetForm();
         renderProducts();
         renderFastButtons(); if(typeof svRender==='function') svRender();
@@ -9028,612 +8356,6 @@
         updateStats();
       }
     }
-  });
-
-  // ================= GEÇMİŞ =================
-  // ================= GEÇMİŞ: SEÇİM & DÜZENLEME =================
-  let historySelectMode = false;
-  let selectedSaleIds = new Set();
-  let editingSaleId = null;
-  let editingSaleItems = [];
-
-  function renderHistory(){
-    const wrap = document.getElementById('salesHistory');
-    const empty = document.getElementById('emptyHistory');
-    wrap.innerHTML='';
-    if(sales.length===0){
-      empty.style.display='block';
-      updateHistorySelectedCount();
-      renderReport();
-      return;
-    }
-    empty.style.display='none';
-    sales.slice(0,50).forEach(sale=>{
-      const d = new Date(sale.date);
-      const dateStr = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-      const itemsStr = sale.items.map(i=>i.name + ' x' + i.qty + (i.kdv ? ' (%' + i.kdv + ')' : '')).join(', ');
-      const isSelected = selectedSaleIds.has(sale.id);
-      const row = document.createElement('div');
-      row.className = 'sale-row' + (historySelectMode && isSelected ? ' selected' : '');
-      row.dataset.id = sale.id;
-      const checkboxHtml = historySelectMode
-        ? `<input type="checkbox" class="sale-checkbox" data-id="${sale.id}" ${isSelected ? 'checked' : ''}>`
-        : '';
-      let userInfo = '';
-      if (sale.userId) {
-        const user = users.find(u => u.id === sale.userId);
-        if (user) userInfo = '👤 ' + user.name;
-        else if (sale.userId === 'guest') userInfo = '👤 Misafir';
-      }
-      const actionsHtml = historySelectMode
-        ? ''
-        : `<div class="sale-row-actions">
-             ${settings.efaturaEnabled ? `<button class="sale-edit-link" data-action="efatura-sale" data-id="${sale.id}">🧾 E-Fatura</button>` : ''}
-             <button class="sale-edit-link" data-action="edit-sale" data-id="${sale.id}">Düzenle / İade</button>
-             <button class="sale-del-link" data-action="delete-sale" data-id="${sale.id}">Sil</button>
-           </div>`;
-      row.innerHTML = `
-        <div class="sale-row-main">
-          ${checkboxHtml}
-          <div class="sale-row-info">
-            <div class="sale-date">${dateStr} ${userInfo}</div>
-            <div class="sale-items">${escapeHtml(itemsStr)}</div>
-          </div>
-        </div>
-        <div class="sale-row-side">
-          <div class="sale-total">${fmt(sale.total)} ${settings.currency}</div>
-          ${actionsHtml}
-        </div>
-      `;
-      wrap.appendChild(row);
-    });
-    updateHistorySelectedCount();
-    renderReport();
-  }
-
-  function updateHistorySelectedCount(){
-    const el = document.getElementById('historySelectedCount');
-    if(el) el.textContent = selectedSaleIds.size;
-  }
-
-  function restoreStockForItems(items){
-    items.forEach(i => {
-      const product = products.find(p => p.barcode === i.barcode);
-      if(product){
-        product.stock += i.qty;
-        logStock(product, i.qty, 'satis-silme', 'Satış silindi');
-      }
-    });
-  }
-
-  async function deleteSaleById(id, askConfirm){
-    const sale = sales.find(s => s.id === id);
-    if(!sale) return;
-    if(!checkAuth('Satış silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-    if(askConfirm && !confirm('Bu satış kalıcı olarak silinecek ve ürün stokları geri eklenecek. Emin misiniz?')) return;
-    restoreStockForItems(sale.items);
-    removeCashEntriesForSales([sale]);
-    sales = sales.filter(s => s.id !== id);
-    selectedSaleIds.delete(id);
-    await persist();
-    logAudit('satis-sil', '#' + id.slice(-4) + ' numaralı satış silindi (' + fmt(sale.total) + ' ' + settings.currency + ')');
-    renderHistory();
-    renderProducts();
-    updateStats();
-  }
-
-  const btnHistorySelectMode = document.getElementById('btnHistorySelectMode');
-  const historyBulkActions = document.getElementById('historyBulkActions');
-
-  function exitHistorySelectMode(){
-    historySelectMode = false;
-    btnHistorySelectMode.classList.remove('active');
-    historyBulkActions.style.display = 'none';
-    selectedSaleIds.clear();
-    renderHistory();
-  }
-
-  btnHistorySelectMode.addEventListener('click', () => {
-    historySelectMode = !historySelectMode;
-    btnHistorySelectMode.classList.toggle('active', historySelectMode);
-    historyBulkActions.style.display = historySelectMode ? 'flex' : 'none';
-    if(!historySelectMode) selectedSaleIds.clear();
-    renderHistory();
-  });
-
-  document.getElementById('btnHistorySelectAll').addEventListener('click', () => {
-    const visibleIds = sales.slice(0,50).map(s => s.id);
-    const allSelected = visibleIds.length > 0 && visibleIds.every(id => selectedSaleIds.has(id));
-    if(allSelected){
-      visibleIds.forEach(id => selectedSaleIds.delete(id));
-    } else {
-      visibleIds.forEach(id => selectedSaleIds.add(id));
-    }
-    renderHistory();
-  });
-
-  document.getElementById('btnHistoryCancelSelect').addEventListener('click', exitHistorySelectMode);
-
-  document.getElementById('btnHistoryDeleteSelected').addEventListener('click', async () => {
-    if(selectedSaleIds.size === 0) return;
-    if(!checkAuth('Satış silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-    if(!confirm(selectedSaleIds.size + ' satış kalıcı olarak silinecek ve ürün stokları geri eklenecek. Emin misiniz?')) return;
-    const idsToDelete = new Set(selectedSaleIds);
-    const deletedSales = sales.filter(s => idsToDelete.has(s.id));
-    deletedSales.forEach(s => restoreStockForItems(s.items));
-    removeCashEntriesForSales(deletedSales);
-    sales = sales.filter(s => !idsToDelete.has(s.id));
-    exitHistorySelectMode();
-    await persist();
-    renderHistory();
-    renderProducts();
-    updateStats();
-  });
-
-  document.getElementById('salesHistory').addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    const id = btn.dataset.id;
-    if(btn.dataset.action === 'edit-sale'){
-      openSaleEdit(id);
-    } else if(btn.dataset.action === 'delete-sale'){
-      deleteSaleById(id, true);
-    } else if(btn.dataset.action === 'efatura-sale'){
-      sendEFaturaForSale(id);
-    }
-  });
-
-  document.getElementById('salesHistory').addEventListener('change', (e) => {
-    const cb = e.target.closest('.sale-checkbox');
-    if(!cb) return;
-    const id = cb.dataset.id;
-    if(cb.checked) selectedSaleIds.add(id); else selectedSaleIds.delete(id);
-    const row = cb.closest('.sale-row');
-    if(row) row.classList.toggle('selected', cb.checked);
-    updateHistorySelectedCount();
-  });
-
-  // ================= SATIŞ DÜZENLEME MODALI =================
-  function openSaleEdit(id){
-    const sale = sales.find(s => s.id === id);
-    if(!sale) return;
-    editingSaleId = id;
-    editingSaleItems = sale.items.map(i => ({...i}));
-    const d = new Date(sale.date);
-    document.getElementById('saleEditDate').textContent = d.toLocaleDateString('tr-TR') + ' ' + d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-    document.getElementById('saleEditMsg').textContent = '';
-    renderSaleEditItems();
-    document.getElementById('saleEditOverlay').classList.add('open');
-  }
-
-  function closeSaleEdit(){
-    document.getElementById('saleEditOverlay').classList.remove('open');
-    editingSaleId = null;
-    editingSaleItems = [];
-  }
-
-  function renderSaleEditItems(){
-    const wrap = document.getElementById('saleEditItems');
-    wrap.innerHTML = '';
-    if(editingSaleItems.length === 0){
-      wrap.innerHTML = '<div class="empty-state" style="padding:16px 0;">Satışta ürün kalmadı. Kaydederseniz bu satış tamamen silinecek.</div>';
-    } else {
-      editingSaleItems.forEach((item, idx) => {
-        const row = document.createElement('div');
-        row.className = 'sale-edit-item';
-        row.innerHTML = `
-          <div class="info">
-            <div class="name">${escapeHtml(item.name)}</div>
-            <div class="meta">${fmt(item.price)} ${settings.currency}${item.kdv ? ' · KDV %' + fmt(item.kdv) : ''}</div>
-          </div>
-          <div class="qty-control">
-            <button class="mini-btn" data-action="dec" data-idx="${idx}" aria-label="Adet azalt">−</button>
-            <span class="qty-value">${item.qty}</span>
-            <button class="mini-btn" data-action="inc" data-idx="${idx}" aria-label="Adet arttır">+</button>
-          </div>
-          <button class="sale-edit-item-remove" data-action="remove" data-idx="${idx}" title="Ürünü satıştan çıkar" aria-label="Ürünü satıştan çıkar">🗑️</button>
-        `;
-        wrap.appendChild(row);
-      });
-    }
-    recalcSaleEditTotal();
-  }
-
-  function recalcSaleEditTotal(){
-    const total = editingSaleItems.reduce((sum,i) => sum + (i.price * i.qty) * (1 + (i.kdv||0)/100), 0);
-    document.getElementById('saleEditTotal').textContent = fmt(total) + ' ' + settings.currency;
-  }
-
-  document.getElementById('saleEditItems').addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if(!btn) return;
-    const idx = parseInt(btn.dataset.idx);
-    if(isNaN(idx)) return;
-    const item = editingSaleItems[idx];
-    if(!item) return;
-    if(btn.dataset.action === 'inc'){
-      item.qty += 1;
-    } else if(btn.dataset.action === 'dec'){
-      item.qty -= 1;
-      if(item.qty <= 0) editingSaleItems.splice(idx,1);
-    } else if(btn.dataset.action === 'remove'){
-      editingSaleItems.splice(idx,1);
-    }
-    renderSaleEditItems();
-  });
-
-  document.getElementById('saleEditClose').addEventListener('click', closeSaleEdit);
-  document.getElementById('saleEditCancelBtn').addEventListener('click', closeSaleEdit);
-  document.getElementById('saleEditOverlay').addEventListener('click', (e) => {
-    if(e.target === document.getElementById('saleEditOverlay')) closeSaleEdit();
-  });
-
-  document.getElementById('saleEditDeleteBtn').addEventListener('click', async () => {
-    if(!editingSaleId) return;
-    if(!checkAuth('Satış silme')) { showScanMsg('Yetki PIN\'i gerekli.', false); return; }
-    const id = editingSaleId;
-    if(!confirm('Bu satış kalıcı olarak silinecek ve ürün stokları geri eklenecek. Emin misiniz?')) return;
-    closeSaleEdit();
-    await deleteSaleById(id, false);
-  });
-
-  document.getElementById('saleEditSaveBtn').addEventListener('click', async () => {
-    if(!editingSaleId) return;
-    const sale = sales.find(s => s.id === editingSaleId);
-    if(!sale){ closeSaleEdit(); return; }
-
-    const originalMap = new Map(sale.items.map(i => [i.barcode, i.qty]));
-    const newMap = new Map(editingSaleItems.map(i => [i.barcode, i.qty]));
-    originalMap.forEach((origQty, barcode) => {
-      const newQty = newMap.has(barcode) ? newMap.get(barcode) : 0;
-      const diff = origQty - newQty;
-      if(diff !== 0){
-        const product = products.find(p => p.barcode === barcode);
-        if(product){
-          product.stock = Math.max(0, product.stock + diff);
-          logStock(product, diff, diff > 0 ? 'satis-iade' : 'satis', 'Satış düzenlendi #' + editingSaleId.slice(-4));
-        }
-      }
-    });
-
-    if(editingSaleItems.length === 0){
-      removeCashEntriesForSales([sale]);
-      sales = sales.filter(s => s.id !== editingSaleId);
-    } else {
-      sale.items = editingSaleItems.map(i => ({name:i.name, barcode:i.barcode, price:i.price, kdv:i.kdv||0, qty:i.qty, cost:i.cost||0}));
-      sale.total = editingSaleItems.reduce((sum,i) => sum + (i.price * i.qty) * (1 + (i.kdv||0)/100), 0);
-    }
-
-    closeSaleEdit();
-    await persist();
-    renderHistory();
-    renderProducts();
-    updateStats();
-  });
-
-  // ================= GEÇMİŞ ALT SEKMELERİ =================
-  document.querySelectorAll('.history-subtab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.history-subtab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.history-subpanel').forEach(p => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById(btn.dataset.target).classList.add('active');
-      if(btn.dataset.target === 'historySubRapor') renderReport();
-      if(btn.dataset.target === 'historySubAnaliz') renderAnaliz();
-      if(btn.dataset.target === 'historySubDenetim') renderAuditLog();
-    });
-  });
-
-  // ================= RAPOR: GÜNLÜK / AYLIK =================
-  const TR_MONTHS = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
-
-  function monthKeyOf(d){
-    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
-  }
-  function dayKeyOf(d){
-    return monthKeyOf(d) + '-' + String(d.getDate()).padStart(2,'0');
-  }
-  function monthLabel(key){
-    const parts = key.split('-');
-    const y = parts[0], m = parts[1];
-    return TR_MONTHS[parseInt(m,10)-1] + ' ' + y;
-  }
-
-  function buildMonthMap(){
-    const monthMap = new Map();
-    sales.forEach(s => {
-      const d = new Date(s.date);
-      const mk = monthKeyOf(d);
-      if(!monthMap.has(mk)) monthMap.set(mk, []);
-      monthMap.get(mk).push(s);
-    });
-    return monthMap;
-  }
-
-  function renderTodaySummary(){
-    const el = document.getElementById('reportTodaySummary');
-    if(!el) return;
-    const todayKey = dayKeyOf(new Date());
-    const todaySales = sales.filter(s => dayKeyOf(new Date(s.date)) === todayKey);
-    const todayTotal = todaySales.reduce((sum,s) => sum + s.total, 0);
-    let todayCost = 0;
-    todaySales.forEach(s => {
-      (s.items||[]).forEach(it => { todayCost += (it.cost||0) * it.qty; });
-    });
-    const todayProfit = todayTotal - todayCost;
-    const hasCostData = todayCost > 0;
-    el.innerHTML = `
-      <div class="report-summary-label">Bugün</div>
-      <div class="report-summary-value">${fmt(todayTotal)} ${settings.currency}</div>
-      <div class="report-summary-count">${todaySales.length} satış</div>
-      ${hasCostData ? `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.3); display:flex; gap:16px; flex-wrap:wrap;">
-        <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Maliyet</div><div class="mono" style="font-weight:700;">${fmt(todayCost)} ${settings.currency}</div></div>
-        <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Bugünkü Kâr</div><div class="mono" style="font-weight:700; color:${todayProfit>=0?'#fff':'#FEE2E2'};">${fmt(todayProfit)} ${settings.currency}</div></div>
-      </div>` : (todaySales.length ? `<div style="margin-top:8px; font-size:12px; color:rgba(255,255,255,0.85);">Kâr görmek için ürünlere "Alış Fiyatı" girin.</div>` : '')}
-    `;
-  }
-
-  function renderReport(){
-    renderTodaySummary();
-    const select = document.getElementById('reportMonthSelect');
-    if(!select) return;
-    const monthMap = buildMonthMap();
-    const monthKeys = Array.from(monthMap.keys()).sort().reverse();
-
-    const prevValue = select.value;
-    select.innerHTML = '';
-    if(monthKeys.length === 0){
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = 'Satış bulunamadı';
-      select.appendChild(opt);
-    } else {
-      monthKeys.forEach(mk => {
-        const opt = document.createElement('option');
-        opt.value = mk;
-        opt.textContent = monthLabel(mk);
-        select.appendChild(opt);
-      });
-    }
-    const selectedKey = monthKeys.includes(prevValue) ? prevValue : (monthKeys[0] || '');
-    select.value = selectedKey;
-    renderReportForMonth(selectedKey, monthMap);
-  }
-
-  function renderReportForMonth(monthKey, monthMapParam){
-    const summaryEl = document.getElementById('reportMonthSummary');
-    const listEl = document.getElementById('reportDayList');
-    const emptyEl = document.getElementById('emptyReport');
-    if(!summaryEl || !listEl || !emptyEl) return;
-    listEl.innerHTML = '';
-
-    const monthMap = monthMapParam || buildMonthMap();
-    const monthSales = monthKey ? (monthMap.get(monthKey) || []) : [];
-
-    if(monthSales.length === 0){
-      summaryEl.innerHTML = '';
-      emptyEl.style.display = 'block';
-      return;
-    }
-    emptyEl.style.display = 'none';
-
-    const monthTotal = monthSales.reduce((sum,s) => sum + s.total, 0);
-
-    let monthCost = 0;
-    const productStats = new Map();
-    monthSales.forEach(s => {
-      (s.items||[]).forEach(it => {
-        const lineRevenue = it.price * it.qty * (1 + (it.kdv||0)/100);
-        const lineCost = (it.cost||0) * it.qty;
-        monthCost += lineCost;
-        const key = it.barcode || it.name;
-        if(!productStats.has(key)) productStats.set(key, {name: it.name, qty:0, revenue:0});
-        const st = productStats.get(key);
-        st.qty += it.qty;
-        st.revenue += lineRevenue;
-      });
-    });
-    const monthProfit = monthTotal - monthCost;
-    const hasCostData = monthCost > 0;
-    const topSellers = Array.from(productStats.values()).sort((a,b)=>b.qty-a.qty).slice(0,5);
-    const topSellersHtml = topSellers.map((t,i)=>`<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.25); font-size:13px;"><span>${i+1}. ${escapeHtml(t.name)}</span><span class="mono" style="color:rgba(255,255,255,0.85);">${t.qty} adet · ${fmt(t.revenue)} ${settings.currency}</span></div>`).join('');
-
-    const hourCounts = new Array(24).fill(0);
-    monthSales.forEach(s=>{ hourCounts[new Date(s.date).getHours()]++; });
-    const maxHourCount = Math.max(1, ...hourCounts);
-    const hourlyBarsHtml = hourCounts.map((c,h)=>{
-      const heightPct = Math.round((c/maxHourCount)*100);
-      return `<div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:2px;" title="${h}:00 — ${c} satış">
-        <div style="width:100%; height:50px; display:flex; align-items:flex-end; background:rgba(255,255,255,0.18); border-radius:2px;"><div style="width:100%; height:${heightPct}%; min-height:${c>0?'2px':'0'}; background:#fff; border-radius:2px 2px 0 0;"></div></div>
-        <div style="font-size:8px; color:rgba(255,255,255,0.85);">${h%3===0?h:''}</div>
-      </div>`;
-    }).join('');
-
-    summaryEl.innerHTML = `
-      <div class="report-summary-label">${escapeHtml(monthLabel(monthKey))} Toplamı</div>
-      <div class="report-summary-value">${fmt(monthTotal)} ${settings.currency}</div>
-      <div class="report-summary-count">${monthSales.length} satış</div>
-      ${hasCostData ? `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.3); display:flex; gap:16px; flex-wrap:wrap;">
-        <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Maliyet</div><div class="mono" style="font-weight:700;">${fmt(monthCost)} ${settings.currency}</div></div>
-        <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Kâr</div><div class="mono" style="font-weight:700; color:${monthProfit>=0?'#fff':'#FEE2E2'};">${fmt(monthProfit)} ${settings.currency}</div></div>
-      </div>` : `<div style="margin-top:8px; font-size:12px; color:rgba(255,255,255,0.85);">Kâr/zarar görmek için ürünlere "Alış Fiyatı" girin.</div>`}
-      ${topSellers.length ? `<div style="margin-top:14px;"><div style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.85); margin-bottom:4px;">🏆 En Çok Satanlar</div>${topSellersHtml}</div>` : ''}
-      <div style="margin-top:14px;">
-        <div style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.85); margin-bottom:6px;">🕐 Saatlik Satış Yoğunluğu</div>
-        <div style="display:flex; gap:2px; align-items:flex-end;">${hourlyBarsHtml}</div>
-      </div>
-    `;
-
-    const dayMap = new Map();
-    monthSales.forEach(s => {
-      const d = new Date(s.date);
-      const dk = dayKeyOf(d);
-      if(!dayMap.has(dk)) dayMap.set(dk, []);
-      dayMap.get(dk).push(s);
-    });
-    const dayKeys = Array.from(dayMap.keys()).sort().reverse();
-
-    dayKeys.forEach(dk => {
-      const daySales = dayMap.get(dk);
-      const dayTotal = daySales.reduce((sum,s) => sum + s.total, 0);
-      const sampleDate = new Date(daySales[0].date);
-      const dayLabel = sampleDate.toLocaleDateString('tr-TR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
-      const card = document.createElement('div');
-      card.className = 'report-day-card';
-      card.innerHTML = `
-        <div class="report-day-info">
-          <div class="report-day-date">${escapeHtml(dayLabel)}</div>
-          <div class="report-day-count">${daySales.length} satış</div>
-        </div>
-        <div class="report-day-total">${fmt(dayTotal)} ${settings.currency}</div>
-        <div class="report-day-arrow">›</div>
-      `;
-      card.addEventListener('click', () => openDayDetail(daySales, dayLabel, dayTotal));
-      listEl.appendChild(card);
-    });
-  }
-
-  const reportMonthSelect = document.getElementById('reportMonthSelect');
-  if(reportMonthSelect){
-    reportMonthSelect.addEventListener('change', (e) => { renderReportForMonth(e.target.value); });
-  }
-
-  // ================= ANALİZ: KÂR MARJI, EN ÇOK/AZ SATAN, ÖLÜ STOK =================
-  function renderAnaliz(){
-    const select = document.getElementById('analizMonthSelect');
-    if(!select) return;
-    const monthMap = buildMonthMap();
-    const monthKeys = Array.from(monthMap.keys()).sort().reverse();
-    const prevValue = select.value;
-    select.innerHTML = '';
-    if(monthKeys.length === 0){
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = 'Satış bulunamadı';
-      select.appendChild(opt);
-    } else {
-      monthKeys.forEach(mk => {
-        const opt = document.createElement('option');
-        opt.value = mk;
-        opt.textContent = monthLabel(mk);
-        select.appendChild(opt);
-      });
-    }
-    const selectedKey = monthKeys.includes(prevValue) ? prevValue : (monthKeys[0] || '');
-    select.value = selectedKey;
-    renderAnalizForMonth(selectedKey, monthMap);
-  }
-
-  function renderAnalizForMonth(monthKey, monthMapParam){
-    const summaryEl = document.getElementById('analizProfitSummary');
-    const bestEl = document.getElementById('analizBestSellers');
-    const worstEl = document.getElementById('analizWorstSellers');
-    const deadEl = document.getElementById('analizDeadStock');
-    const emptyDeadEl = document.getElementById('emptyDeadStock');
-    if(!summaryEl || !bestEl || !worstEl || !deadEl) return;
-
-    const monthMap = monthMapParam || buildMonthMap();
-    const monthSales = monthKey ? (monthMap.get(monthKey) || []) : [];
-
-    let revenue = 0, cost = 0, discount = 0;
-    const productStats = new Map();
-    monthSales.forEach(s => {
-      revenue += s.total;
-      discount += s.discount || 0;
-      (s.items||[]).forEach(it => {
-        const lineCost = (it.cost||0) * it.qty;
-        cost += lineCost;
-        const key = it.barcode || it.name;
-        if(!productStats.has(key)) productStats.set(key, {name: it.name, qty: 0});
-        productStats.get(key).qty += it.qty;
-      });
-    });
-    const profit = revenue - cost;
-    const marginPct = revenue > 0 ? (profit/revenue*100) : 0;
-    const hasCostData = cost > 0;
-
-    if(monthSales.length === 0){
-      summaryEl.innerHTML = '<div class="empty-state" style="margin:0;">Bu ayda satış bulunamadı.</div>';
-    } else {
-      summaryEl.innerHTML = `
-        <div class="report-summary-label">${escapeHtml(monthLabel(monthKey))} — Kâr Marjı</div>
-        <div class="report-summary-value">${fmt(profit)} ${settings.currency}</div>
-        <div class="report-summary-count">${monthSales.length} satış${hasCostData ? (' · %' + marginPct.toFixed(1) + ' kâr marjı') : ' · alış fiyatı girilmemiş ürünler hesaba katılmadı'}</div>
-        <div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.3); display:flex; gap:16px; flex-wrap:wrap;">
-          <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Ciro</div><div class="mono" style="font-weight:700;">${fmt(revenue)} ${settings.currency}</div></div>
-          <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">Maliyet</div><div class="mono" style="font-weight:700;">${fmt(cost)} ${settings.currency}</div></div>
-          <div><div style="font-size:11px; color:rgba(255,255,255,0.85);">İndirim</div><div class="mono" style="font-weight:700;">${fmt(discount)} ${settings.currency}</div></div>
-        </div>
-      `;
-    }
-
-    const allStats = Array.from(productStats.values());
-    const bestSellers = [...allStats].sort((a,b)=>b.qty-a.qty).slice(0,10);
-    const worstSellers = [...allStats].sort((a,b)=>a.qty-b.qty).slice(0,10);
-
-    function rowsHtml(list){
-      if(list.length === 0) return '<div class="empty-state" style="margin:0;">Veri yok.</div>';
-      return list.map((t,i)=>`<div class="analiz-row"><span class="analiz-rank">${i+1}.</span><span class="analiz-name">${escapeHtml(t.name)}</span><span class="analiz-value">${t.qty} adet</span></div>`).join('');
-    }
-    bestEl.innerHTML = rowsHtml(bestSellers);
-    worstEl.innerHTML = rowsHtml(worstSellers);
-
-    // Ölü stok: tüm satış geçmişi baz alınarak, son 30 gündür satılmamış ama stokta olan ürünler
-    const cutoff = Date.now() - 30*24*60*60*1000;
-    const soldRecentBarcodes = new Set();
-    sales.forEach(s => {
-      if(new Date(s.date).getTime() >= cutoff){
-        (s.items||[]).forEach(it => { if(it.barcode) soldRecentBarcodes.add(it.barcode); });
-      }
-    });
-    const deadStock = products.filter(p => p.stock > 0 && !soldRecentBarcodes.has(p.barcode));
-    if(deadStock.length === 0){
-      deadEl.innerHTML = '';
-      if(emptyDeadEl) emptyDeadEl.style.display = 'block';
-    } else {
-      if(emptyDeadEl) emptyDeadEl.style.display = 'none';
-      deadEl.innerHTML = deadStock
-        .sort((a,b) => (b.stock*b.price) - (a.stock*a.price))
-        .slice(0,50)
-        .map(p => `<div class="analiz-row"><span class="analiz-name">${escapeHtml(p.name)}</span><span class="analiz-value">${p.stock} adet · ${fmt(p.stock*p.price)} ${settings.currency}</span></div>`)
-        .join('');
-    }
-  }
-
-  const analizMonthSelect = document.getElementById('analizMonthSelect');
-  if(analizMonthSelect){
-    analizMonthSelect.addEventListener('change', (e) => { renderAnalizForMonth(e.target.value); });
-  }
-
-  function openDayDetail(daySales, dayLabel, dayTotal){
-    document.getElementById('dayDetailTitle').textContent = '📅 ' + dayLabel;
-    const wrap = document.getElementById('dayDetailSales');
-    wrap.innerHTML = '';
-    const sorted = [...daySales].sort((a,b) => new Date(b.date) - new Date(a.date));
-    sorted.forEach(sale => {
-      const d = new Date(sale.date);
-      const timeStr = d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
-      const itemsStr = sale.items.map(i=>i.name + ' x' + i.qty + (i.kdv ? ' (%' + i.kdv + ')' : '')).join(', ');
-      const row = document.createElement('div');
-      row.className = 'day-detail-sale';
-      row.innerHTML = `
-        <div class="day-detail-sale-info">
-          <div class="day-detail-sale-time">${timeStr}</div>
-          <div class="day-detail-sale-items">${escapeHtml(itemsStr)}</div>
-        </div>
-        <div class="day-detail-sale-total">${fmt(sale.total)} ${settings.currency}</div>
-      `;
-      wrap.appendChild(row);
-    });
-    document.getElementById('dayDetailTotal').textContent = fmt(dayTotal) + ' ' + settings.currency;
-    document.getElementById('dayDetailOverlay').classList.add('open');
-  }
-  function closeDayDetail(){
-    document.getElementById('dayDetailOverlay').classList.remove('open');
-  }
-  document.getElementById('dayDetailClose').addEventListener('click', closeDayDetail);
-  document.getElementById('dayDetailOverlay').addEventListener('click', (e) => {
-    if(e.target === document.getElementById('dayDetailOverlay')) closeDayDetail();
   });
 
   function openStockLog(product){
@@ -10356,12 +9078,12 @@
 
   // ================= BAŞLAT =================
   loadUsers();
+  // Satış geçmişi ve kasa defteri kaldırıldı: eski kayıtlar cihazdan da temizlenir
+  try{ ['nur_market_cash_ledger','nur_market_audit_log'].forEach(k => localStorage.removeItem(k)); }catch(_){}
   loadCreditCustomers();
-  loadCashLedger();
   loadStockLog();
   loadHeldSales();
   renderHeldSalesBadge();
-  loadAuditLog();
   loadContactItems();
   loadFastList();
   loadWeighProducts();
@@ -10375,10 +9097,9 @@
   renderSupplierOptions();
   renderProducts();
   renderCart();
-  renderHistory();
+  
   renderFastButtons(); if(typeof svRender==='function') svRender();
   renderCreditCustomers();
-  renderCashLedger();
   renderUserManagement();
   checkLock();
   resetAutoLockTimer();
